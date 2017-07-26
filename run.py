@@ -1,20 +1,11 @@
 #!/usr/bin/python
 
-import flask.json
 import logging
 import click
-import decimal
 
-from app.Api import api
-from app.Home import home
-from app.User import user
-from app.Blacklist import blacklist
 from database import db, User, Role, Blacklist
-from flask import Flask, url_for, request
 from flask import jsonify
-from flask_migrate import Migrate
 from flask_navigation import Navigation
-from dateutil.parser import parse
 
 from raven.contrib.flask import Sentry
 from flask.ext.bower import Bower
@@ -23,49 +14,17 @@ from flask_login import current_user
 from flask_babel import Babel, gettext, ngettext, format_datetime
 from tools.Acl import Acl
 
-sentry = Sentry()
+from application import create_application
 
-app = Flask(__name__)
-app.config.from_object('config.Blacklist')
+app = create_application()
+
 Bower(app)
-migrate = Migrate(app, db)
+nav = Navigation(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = "user.login"
 login_manager.login_message_category = "info"
 app.login_manager = login_manager
-nav = Navigation(app)
-babel = Babel(app)
-
-thread = None
-
-# sentry = Sentry(app)
-# Convert decimals to floats in JSON
-
-def url_for_other_page(page):
-    args = request.view_args.copy()
-    args['page'] = page
-    return url_for(request.endpoint, **args)
-app.jinja_env.globals['url_for_other_page'] = url_for_other_page
-
-class APIoTJSONEncoder(flask.json.JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, decimal.Decimal):
-            # Convert decimal instances to float.
-            return float(obj)
-        return super(APIoTJSONEncoder, self).default(obj)
-
-app.json_encoder = APIoTJSONEncoder
-
-db.init_app(app)
-sentry.init_app(app)
-app.sentry = sentry
-
-app.register_blueprint(home)
-app.register_blueprint(api, url_prefix='/api')
-app.register_blueprint(user, url_prefix='/user')
-app.register_blueprint(blacklist, url_prefix='/blacklist')
-
 
 if not app.debug:
     from logging.handlers import RotatingFileHandler

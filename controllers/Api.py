@@ -1,11 +1,18 @@
-from flask import jsonify, Blueprint, request, url_for
+from flask import jsonify, Blueprint, request, url_for, current_app
+from task import create_celery
 from database import db, Role, Blacklist
-
 __author__ = "Adam Schubert"
 __date__ = "$26.7.2017 19:33:05$"
 
 api = Blueprint('api', __name__)
 
+
+@api.route('/test', methods=['GET'])
+def test():
+    celery = create_celery(current_app)
+    res = celery.send_task('tasks.simple_task', args=('-=-= TEST FROM VIEW =-=-',))
+
+    return jsonify(res.wait()), 200
 
 @api.route('/blacklist', methods=['GET'], defaults={'page': 1})
 @api.route('/blacklist/page/<int:page>', methods=['GET'])

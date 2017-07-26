@@ -2,5 +2,7 @@ flask-bower
 flask-login
 Flask-Navigation
 Flask-Babel
+celery
+redis
 WTForms
 flask_migrate

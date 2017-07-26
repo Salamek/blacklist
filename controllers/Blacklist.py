@@ -6,6 +6,7 @@ from flask_login import login_user, logout_user, current_user, login_required, f
 from forms.blacklist import EditForm, NewForm
 from database import db, Role, Blacklist
 from tools.Acl import Acl
+from task import create_celery
 
 __author__ = "Adam Schubert"
 __date__ = "$26.7.2017 19:33:05$"
@@ -39,6 +40,10 @@ def new_blacklist():
         blacklist_new.signed = form.signed.data
         db.session.add(blacklist_new)
         db.session.commit()
+
+        celery = create_celery(flask.current_app)
+        res = celery.send_task('tasks.generate_thumbnail', args=(blacklist_new.id,))
+
         flask.flash('New blacklist item was added successfully.', 'success')
         return flask.redirect(flask.url_for('blacklist.get_blacklist'))
 
@@ -69,6 +74,8 @@ def edit_blacklist(blacklist_id):
         blacklist_detail.signed = form.signed.data
         db.session.add(blacklist_detail)
         db.session.commit()
+        celery = create_celery(flask.current_app)
+        res = celery.send_task('tasks.generate_thumbnail', args=(blacklist_detail.id,))
         flask.flash('Domain was saved successfully.', 'success')
         return flask.redirect(flask.url_for('blacklist.get_blacklist'))
 
