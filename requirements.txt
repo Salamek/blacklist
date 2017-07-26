@@ -6,3 +6,4 @@ celery
 redis
 WTForms
 flask_migrate
+raven
