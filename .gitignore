@@ -3,3 +3,6 @@ bower_components
 /config.py
 /static/img/thumbnails/*
 !/static/img/thumbnails/README.md
+.idea/*
+__pycache__/
+
