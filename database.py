@@ -100,7 +100,7 @@ class Blacklist(BaseTable):
     id = db.Column(db.Integer, primary_key=True)
     dns = db.Column(db.String(255), unique=True)
     bank_account = db.Column(db.String(255))
-    screen_shot = db.Column(db.String(255))
+    thumbnail = db.Column(db.Boolean)
     signed = db.Column(db.Boolean)
     ssl = db.Column(db.Boolean)
     date = db.Column(db.DateTime)

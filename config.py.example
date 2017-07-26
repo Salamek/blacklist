@@ -5,3 +5,5 @@ class Blacklist(object):
     SECRET_KEY = 'extreamly_secret_flask_key+dfsdfgh'
     CELERY_BROKER_URL='redis://localhost:6379',
     CELERY_RESULT_BACKEND='redis://localhost:6379'
+    CELERY_IMPORTS = ('tasks',)
+    THUMBNAIL_FOLDER = 'static/img/thumbnails'

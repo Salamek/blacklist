@@ -36,10 +36,12 @@ if not app.debug:
 def before_request():
     menu_items = []
     menu_items.append(nav.Item('Home', 'home.get_home'))
+    menu_items.append(nav.Item('API', 'api.get_doc'))
+    menu_items.append(nav.Item('API Endpoint', 'api.get_blacklist'))
     if current_user.is_authenticated and Acl.validate([Role.ADMIN], current_user):
         menu_items.append(nav.Item('Users', 'user.get_user'))
         menu_items.append(nav.Item('Blacklist', 'blacklist.get_blacklist'))
-        menu_items.append(nav.Item('API Endpoint', 'api.get_blacklist'))
+
     nav.Bar('top', menu_items)
 
 @login_manager.user_loader

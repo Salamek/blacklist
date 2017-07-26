@@ -18,6 +18,27 @@ $(function () {
         });
     });
 
+    $('.api-test').click(function(){
+        var url = $(this).data('url');
+
+        var $container = $(this).next('.jumbotron');
+        if (!$container.length)
+        {
+            $container = $('<pre class="jumbotron">');
+            $(this).after($container);
+        }
+
+        $.ajax({
+            type: 'GET',
+            url: url,
+            success: function(data){
+                $container.html(JSON.stringify(data, null, 2));
+            },
+            error: function() {
+                $container.html('<div class="alert alert-danger">Failed</div>');
+            }
+        });
+    });
 
     $('.confirm').click(function(e){
         var message = $(this).data('confirm-message');

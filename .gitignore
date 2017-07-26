@@ -1,3 +1,5 @@
 bower_components
 *.pyc
 /config.py
+/static/img/thumbnails/*
+!/static/img/thumbnails/README.md

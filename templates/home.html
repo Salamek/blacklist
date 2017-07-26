@@ -29,7 +29,7 @@
     {% for item in pagination.items %}
     <tr>
         <th scope="row">{{item.id}}</th>
-        <th>{{item.screen_shot}}</th>
+        <th>{% if item.thumbnail %}<img src="{{ url_for('static', filename='img/thumbnails/thumbnail_{}.png'.format(item.id))}}" alt="{{item.dns}}" width="200" height="100">{% endif %}</th>
         <td><a href="{{item.dns|fix_url}}" target="_blank">{{item.dns}}</a></td>
         <td>{{item.bank_account}}</td>
         <td>{{item.note}}</td>

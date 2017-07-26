@@ -9,6 +9,10 @@ html, body
     width: 90%;
 }
 
+.table > tbody > tr > td {
+     vertical-align: middle;
+}
+
 .navbar-default
 {
     border-radius: 0px;
