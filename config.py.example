@@ -1,0 +1,5 @@
+class Blacklist(object):
+    DEBUG = True  # Debug mode
+    LOG_FILE = './logs/app.log'
+    SQLALCHEMY_DATABASE_URI = ''  # Database configuration
+    SECRET_KEY = 'extreamly_secret_flask_key+dfsdfgh'

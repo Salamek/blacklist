@@ -1,0 +1,24 @@
+
+html, body
+{
+    height: 100%;
+}
+
+.container
+{
+    width: 90%;
+}
+
+.navbar-default
+{
+    border-radius: 0px;
+    margin-bottom: 0px;
+}
+
+.alert
+{
+    border-radius: 0px;
+    margin-bottom: 0px;
+}
+
+.top-buffer { margin-top:20px; }

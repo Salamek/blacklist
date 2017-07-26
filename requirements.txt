@@ -1,0 +1,6 @@
+flask-bower
+flask-login
+Flask-Navigation
+Flask-Babel
+WTForms
+flask_migrate

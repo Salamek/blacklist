@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+{% from 'macros.html' import render_pagination %}
+{% block body %}
+
+<h1>{{ _('Blacklist') }}</h1>
+
+<table class="table table-hover table-bordered">
+    <thead>
+    <tr>
+        <th colspan="8" class="text-center">Item info</th>
+        <th colspan="4" class="text-center">Blocking request info</th>
+    </tr>
+    <tr>
+        <th>#</th>
+        <th>{{ _('Image') }}</th>
+        <th>{{ _('DNS') }}</th>
+        <th>{{ _('Bank account') }}</th>
+        <th>{{ _('Note') }}</th>
+        <th>{{ _('Your provider blocking status') }}</th>
+        <th>{{ _('Updated') }}</th>
+        <th>{{ _('Created') }}</th>
+        <th>{{ _('Request date') }}</th>
+        <th class="text-center">{{ _('Valid PDF signature') }}</th>
+        <th class="text-center">{{ _('Valid source SSL') }}</th>
+        <th class="text-center">{{ _('Trustful') }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in pagination.items %}
+    <tr>
+        <th scope="row">{{item.id}}</th>
+        <th>{{item.screen_shot}}</th>
+        <td><a href="{{item.dns|fix_url}}" target="_blank">{{item.dns}}</a></td>
+        <td>{{item.bank_account}}</td>
+        <td>{{item.note}}</td>
+        <th class="blocking-status text-center" data-url="{{item.dns|fix_url}}"></th>
+        <td>{{item.updated|format_datetime}}</td>
+        <td>{{item.created|format_datetime}}</td>
+        <td>{{item.date|format_datetime}}</td>
+        <td class="text-center">{{item.signed|format_boolean|safe}}</td>
+        <td class="text-center">{{item.ssl|format_boolean|safe}}</td>
+        <td class="text-center">{{item.ssl or item.signed|format_boolean|safe}}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<div class="text-center">
+{{render_pagination(pagination)}}
+</div>
+{% endblock %}
