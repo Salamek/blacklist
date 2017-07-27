@@ -10,26 +10,26 @@ $(function () {
             if (images_cnt == loaded_success_cnt)
             {
                 $that.html('Not blocked (' + loaded_success_cnt + '/' + images_cnt + ')');
-                $that.removeClass('label-info')
-                $that.addClass('label-success')
+                $that.removeClass('label-info');
+                $that.addClass('label-success');
             }
             else if (images_cnt / 2 <= loaded_success_cnt)
             {
                 $that.html('Probably not blocked (' + loaded_success_cnt + '/' + images_cnt + ')');
-                $that.removeClass('label-info')
-                $that.addClass('label-primary')
+                $that.removeClass('label-info');
+                $that.addClass('label-primary');
             }
             else if (images_cnt / 3 <= loaded_success_cnt)
             {
                 $that.html('Blocked or network error. (' + loaded_success_cnt + '/' + images_cnt + ')');
-                $that.removeClass('label-info')
-                $that.addClass('label-warning')
+                $that.removeClass('label-info');
+                $that.addClass('label-warning');
             }
             else
             {
                 $that.html('BLOCKED! (' + loaded_success_cnt + '/' + images_cnt + ')');
-                $that.removeClass('label-info')
-                $that.addClass('label-danger')
+                $that.removeClass('label-info');
+                $that.addClass('label-danger');
             }
         }
         var image_loader = function (images)
@@ -63,12 +63,21 @@ $(function () {
             type: 'GET',
             url: url,
             success: function(images){
-                image_loader(images);
+                if (images.length == 0)
+                {
+                     $that.html('Failed to retrieve testing images :(');
+                    $that.removeClass('label-info');
+                    $that.addClass('label-warning');
+                }
+                else
+                {
+                    image_loader(images);
+                }
             },
             error: function() {
                 $that.html('Failed to retrieve testing images :(');
-                $that.removeClass('label-info')
-                $that.addClass('label-warning')
+                $that.removeClass('label-info');
+                $that.addClass('label-warning');
             }
         });
     });
