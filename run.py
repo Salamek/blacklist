@@ -46,6 +46,7 @@ def before_request():
     if current_user.is_authenticated and Acl.validate([Role.ADMIN], current_user):
         menu_items.append(nav.Item('Users', 'user.get_user'))
         menu_items.append(nav.Item('Blacklist', 'blacklist.get_blacklist'))
+        menu_items.append(nav.Item('Trigger crawl', 'crawl.trigger_crawl'))
 
     nav.Bar('top', menu_items)
 

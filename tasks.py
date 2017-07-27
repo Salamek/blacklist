@@ -1,6 +1,11 @@
 # -*- encoding: utf-8 -*-
 from task import create_celery
-from PIL import Image
+
+try:
+    from PIL import Image
+except ImportError:
+    import Image
+
 from application import create_application
 from database import Blacklist, ApiLog, BlockingLog, Pdf, db
 from sqlalchemy import or_
