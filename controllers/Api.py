@@ -2,7 +2,7 @@ from flask import jsonify, Blueprint, request, url_for, current_app, render_temp
 from task import create_celery
 from database import db, Role, Blacklist
 import urllib.request
-
+import sys
 try:
     from urlparse import urljoin
 except ImportError:
@@ -34,7 +34,10 @@ def get_image(blacklist_id):
     # Find all images on website
     website = urllib.request.urlopen(url)
     html = website.read()
-    pat = re.compile(rb'<img [^>]*src="([^"]+)')
+    if (sys.version_info > (3, 0)):
+        pat = re.compile(rb'<img [^>]*src="([^"]+)')
+    else:
+        pat = re.compile(r'<img [^>]*src="([^"]+)')
     images = pat.findall(html)
 
     # Find working_images for testing

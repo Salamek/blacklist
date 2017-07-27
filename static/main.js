@@ -65,7 +65,7 @@ $(function () {
             success: function(images){
                 if (images.length == 0)
                 {
-                     $that.html('Failed to retrieve testing images :(');
+                    $that.html('Failed to retrieve testing images :(');
                     $that.removeClass('label-info');
                     $that.addClass('label-warning');
                 }
