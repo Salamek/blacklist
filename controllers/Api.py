@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from flask import jsonify, Blueprint, request, url_for, current_app, render_template
 from task import create_celery
 from database import db, Role, Blacklist, BlockingLog
@@ -103,6 +105,9 @@ def get_blacklist(page):
             'updated': row.updated,
             'created': row.created
         })
+
+        if 'reveal_agent_identity' in request.args and request.args['reveal_agent_identity']:
+            data_ret[-1]["agent"] = "bureš"
 
     ret = {
         'has_next': paginator.has_next,
