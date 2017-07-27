@@ -75,7 +75,7 @@ def crawl_blacklist():
         pdf_toread = PyPDF2.PdfFileReader(open(file_path, "rb"))
         pdf_info = pdf_toread.getDocumentInfo()
 
-        csv_parsed = tabula.read_pdf(file_path, spreadsheet=True).to_csv()
+        csv_parsed = tabula.read_pdf(file_path, spreadsheet=True).to_csv(encoding="utf-8")
 
         pdf = Pdf()
         pdf.sum = md5sum
