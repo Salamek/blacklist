@@ -9,3 +9,4 @@ flask_migrate
 raven
 tabula-py
 PyPDF2
+pil
