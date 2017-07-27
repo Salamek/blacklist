@@ -8,7 +8,7 @@ Original blacklist is in [PDF](http://www.mfcr.cz/assets/cs/media/Zverejnovane-u
 
 * JSON API
 * List of blacklist items with blocking info, URL, page thumbnail and paging
-* Administration of blacklist (Adding/Removing will be removed in future when PDF parsing will work)
+* Administration of blacklist
 * Your provider blocking info
 * OSS :)
 
@@ -16,7 +16,6 @@ Original blacklist is in [PDF](http://www.mfcr.cz/assets/cs/media/Zverejnovane-u
 
 * List of blocking providers
 * Blocking vs not blocking requests stats
-* Auto MFCR PDF Download, validation and parsing (it is hard as fuck, simple CSV with digital signature would be 100000000 times better)
 
 # Installation
 
@@ -33,10 +32,11 @@ flask run
 
 default username and password are admin:admin
 
-application uses Celery for background tasks, so you should run run_worker.sh if you want them working :)
+application uses Celery for background tasks, so you should run run_worker.sh & run_beat.sh if you want them working :)
 
 ```
 ./run_worker.sh
+./run_beat.sh
 ```
 
 # UWSGI
