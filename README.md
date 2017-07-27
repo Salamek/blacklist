@@ -14,6 +14,8 @@ Original blacklist is in [PDF](http://www.mfcr.cz/assets/cs/media/Zverejnovane-u
 
 # TODO
 
+* List of blocking providers
+* Blocking vs not blocking requests stats
 * Auto MFCR PDF Download, validation and parsing (it is hard as fuck, simple CSV with digital signature would be 100000000 times better)
 
 # Installation
