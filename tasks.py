@@ -14,7 +14,6 @@ import hashlib
 import os
 import tabula
 import csv
-import pprint
 import datetime
 import PyPDF2
 from tools.Validators import Validators
@@ -75,8 +74,6 @@ def crawl_blacklist():
 
         pdf_toread = PyPDF2.PdfFileReader(open(file_path, "rb"))
         pdf_info = pdf_toread.getDocumentInfo()
-
-        pprint.pprint(pdf_info)
 
         csv_parsed = tabula.read_pdf(file_path, spreadsheet=True).to_csv()
 
