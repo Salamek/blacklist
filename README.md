@@ -1,6 +1,7 @@
 # Czech blacklist info page
 
 This is simple Czech Web BLACKLIST info page with simple API to retrieve blacklist items written in Python Flask
+
 Original blacklist is in [PDF](http://www.mfcr.cz/assets/cs/media/Zverejnovane-udaje-ze-Seznamu-nepovolenych-internetovych-her_v1.pdf) (Yes in PDF, i'm not joking) on [MFCR](http://www.mfcr.cz/cs/soukromy-sektor/hazardni-hry/seznam-nepovolenych-internetovych-her/2017/zverejnovane-udaje-ze-seznamu-nepovoleny-29270) web page
 
 # Features
@@ -17,8 +18,6 @@ Original blacklist is in [PDF](http://www.mfcr.cz/assets/cs/media/Zverejnovane-u
 
 # Installation
 
-clone this repository
-
 ```bash
 git clone https://github.com/Salamek/blacklist.git
 cd blacklist
@@ -31,6 +30,12 @@ flask run
 ```
 
 default username and password are admin:admin
+
+application uses Celery for background tasks, so you should run run_worker.sh if you want them working :)
+
+```
+./run_worker.sh
+```
 
 # UWSGI
 
