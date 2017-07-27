@@ -9,11 +9,13 @@ Original blacklist is in [PDF](http://www.mfcr.cz/assets/cs/media/Zverejnovane-u
 * JSON API
 * List of blacklist items with blocking info, URL, page thumbnail and paging
 * Administration of blacklist (Adding/Removing will be removed in future when PDF parsing will work)
+* Your provider blocking info
 * OSS :)
 
 # TODO
 
-* Better provider blocking testing (current JS implementation will fail in 91% due to CORS)
+* List of blocking providers
+* Blocking vs not blocking requests stats
 * Auto MFCR PDF Download, validation and parsing (it is hard as fuck, simple CSV with digital signature would be 100000000 times better)
 
 # Installation
