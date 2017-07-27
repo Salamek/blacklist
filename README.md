@@ -31,6 +31,12 @@ flask run
 
 default username and password are admin:admin
 
+application uses Celery for background tasks, so you should run run_worker.sh if you want them working :)
+
+```
+./run_worker.sh
+```
+
 # UWSGI
 
 ```ini
