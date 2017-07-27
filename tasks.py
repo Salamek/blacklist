@@ -59,6 +59,7 @@ def crawl_blacklist():
     pdf = Pdf.query.filter_by(sum=md5sum).first()
     if pdf:
         print('This PDF is already crawled ID:{}'.format(pdf.id))
+        pdf.updated = datetime.datetime.now()
     else:
         # Store PDF
         file_path = os.path.join(app.config['PDF_STORAGE'], '{}.pdf'.format(md5sum))
@@ -120,8 +121,8 @@ def crawl_blacklist():
 
             db.session.add(blacklist)
 
-        db.session.add(pdf)
-        db.session.commit()
+    db.session.add(pdf)
+    db.session.commit()
 
 
 

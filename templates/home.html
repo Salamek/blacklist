@@ -19,7 +19,7 @@
         <th>{{ _('Your provider blocking status') }}</th>
         <th>{{ _('Updated') }}</th>
         <th>{{ _('Created') }}</th>
-        <th>{{ _('Request date') }}</th>
+        <th>{{ _('Published') }}</th>
         <th class="text-center">{{ _('Valid PDF signature') }}</th>
         <th class="text-center">{{ _('Valid source SSL') }}</th>
         <th class="text-center">{{ _('Trustful') }}</th>
@@ -36,7 +36,10 @@
         <td class="text-center"><div class="label blocking-status label-info" data-url="{{url_for('api.get_image', blacklist_id=item.id)}}" data-result="{{url_for('api.log_blocks', blacklist_id=item.id)}}">Checking...</div></td>
         <td>{{item.updated|format_datetime}}</td>
         <td>{{item.created|format_datetime}}</td>
-        <td>{{item.date|format_datetime}}</td>
+        <td>
+            {{ _('DNS') }}: {{item.dns_date_published|format_date}} - {{item.dns_date_removed|format_date if item.dns_date_removed else '∞'}}<br>
+            {{ _('Bank account') }}: {{item.bank_account_date_published|format_date}} - {{item.bank_account_date_removed|format_date if item.bank_account_date_removed else '∞'}}
+        </td>
         <td class="text-center">{{item.signed|format_boolean|safe}}</td>
         <td class="text-center">{{item.ssl|format_boolean|safe}}</td>
         <td class="text-center">{{item.ssl or item.signed|format_boolean|safe}}</td>

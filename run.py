@@ -3,15 +3,15 @@
 import logging
 import click
 
-from database import db, User, Role, Blacklist
-from flask import jsonify
+from database import db, User, Role, Pdf
+from flask import jsonify, g
 from flask_navigation import Navigation
 
 from raven.contrib.flask import Sentry
 from flask.ext.bower import Bower
 from flask_login import LoginManager
 from flask_login import current_user
-from flask_babel import Babel, gettext, ngettext, format_datetime
+from flask_babel import Babel, gettext, ngettext, format_datetime, format_date
 from tools.Acl import Acl
 
 from application import create_application
@@ -34,6 +34,9 @@ if not app.debug:
 
 @app.before_request
 def before_request():
+    g.last_crawled_pdf = Pdf.query.order_by(Pdf.updated.desc()).first()
+    g.last_data_update_pdf = Pdf.query.order_by(Pdf.created.desc()).first()
+
     menu_items = []
     menu_items.append(nav.Item('Home', 'home.get_home'))
     menu_items.append(nav.Item('API', 'api.get_doc'))
@@ -88,6 +91,10 @@ def default_data():
 @app.template_filter('format_datetime')
 def format_datetime_filter(date_time):
     return format_datetime(date_time)
+
+@app.template_filter('format_date')
+def format_date_filter(date_time):
+    return format_date(date_time)
 
 @app.template_filter('fix_url')
 def fix_url_filter(url):

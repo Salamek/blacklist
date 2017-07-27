@@ -1,7 +1,6 @@
 from flask import jsonify, Blueprint, request, url_for, current_app, render_template
 from task import create_celery
-from database import db, Role, Blacklist, BlockingLog
-
+from database import db, Role, Blacklist, BlockingLog, Pdf
 
 try:
     from urllib2 import urlopen
@@ -20,6 +19,13 @@ __author__ = "Adam Schubert"
 __date__ = "$26.7.2017 19:33:05$"
 
 api = Blueprint('api', __name__)
+
+@api.route('/test')
+def test():
+    celery = create_celery(current_app)
+    celery.send_task('tasks.crawl_blacklist', args=())
+
+    return jsonify({}), 200
 
 @api.route('/doc', methods=['GET'])
 def get_doc():
