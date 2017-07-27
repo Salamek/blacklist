@@ -1,9 +1,22 @@
 # -*- encoding: utf-8 -*-
 from task import create_celery
 from application import create_application
-from database import Blacklist, ApiLog, BlockingLog, db
+from database import Blacklist, ApiLog, BlockingLog, Pdf, db
 import subprocess
+import hashlib
 import os
+import tabula
+import csv
+import pprint
+import datetime
+import PyPDF2
+from tools.Validators import Validators
+
+try:
+    from urllib2 import urlopen
+except ImportError:
+    from urllib.request import urlopen
+
 
 app = create_application()
 celery = create_celery(app)
@@ -32,6 +45,84 @@ def log_api(remote_addr):
 
     db.session.add(found)
     db.session.commit()
+
+
+@celery.task(name="tasks.crawl_blacklist")
+def crawl_blacklist():
+    date_format = "%d.%m.%Y"
+    response = urlopen(app.config['BLACKLIST_SOURCE'])
+    pdf_content = response.read()
+
+    md5sum = hashlib.md5(pdf_content).hexdigest()
+
+    # We dont have this PDF yet, parse it
+    pdf = Pdf.query.filter_by(sum=md5sum).first()
+    if pdf:
+        print('This PDF is already crawled ID:{}'.format(pdf.id))
+    else:
+        # Store PDF
+        file_path = os.path.join(app.config['PDF_STORAGE'], '{}.pdf'.format(md5sum))
+        with open(file_path, 'wb') as f:
+            f.write(pdf_content)
+
+        pdf_toread = PyPDF2.PdfFileReader(open(file_path, "rb"))
+        pdf_info = pdf_toread.getDocumentInfo()
+
+        pprint.pprint(pdf_info)
+
+        csv_parsed = tabula.read_pdf(file_path, spreadsheet=True).to_csv()
+
+        pdf = Pdf()
+        pdf.sum = md5sum
+        pdf.name = os.path.basename(response.geturl())
+        pdf.signed = False  # !FIXME Check signature
+        pdf.ssl = response.geturl().startswith('https')  # We dont need better check,  urlopen checks SSL cert validity
+        pdf.parsed = csv_parsed
+        pdf.size = os.path.getsize(file_path)
+        pdf.title = pdf_info.title if pdf_info.title else pdf_info.subject
+        pdf.author = pdf_info.author
+        pdf.creator = pdf_info.creator
+        pdf.format = '?'  # FIXME
+        pdf.pages = pdf_toread.getNumPages()
+
+        csv_data = csv.reader(csv_parsed.splitlines(), delimiter=',')
+        for row in csv_data:
+            # table item have 7 cols
+            if len(row) != 7:
+                continue
+
+            dns = row[1].strip()  # Required
+            if not Validators.is_valid_hostname(dns):
+                continue
+
+            dns_date_published = datetime.datetime.strptime(row[2].strip(), date_format) if row[2].strip() else None
+            dns_date_removed = datetime.datetime.strptime(row[3].strip(), date_format) if row[3].strip() else None
+            bank_account = row[4].strip()
+            bank_account_date_published = datetime.datetime.strptime(row[5].strip(), date_format) if row[
+                5].strip() else None
+            bank_account_date_removed = datetime.datetime.strptime(row[6].strip(), date_format) if row[
+                6].strip() else None
+
+            blacklist = Blacklist.query.filter_by(dns=dns).first()
+            if not blacklist:
+                blacklist = Blacklist()
+                blacklist.dns = dns
+                blacklist.last_crawl = None
+            blacklist.bank_account = bank_account
+            blacklist.signed = pdf.signed  # !FIXME REMOVE and read from PDF directly
+            blacklist.ssl = pdf.ssl  # !FIXME REMOVE and read from PDF directly
+            blacklist.dns_date_published = dns_date_published
+            blacklist.dns_date_removed = dns_date_removed
+            blacklist.bank_account_date_published = bank_account_date_published
+            blacklist.bank_account_date_removed = bank_account_date_removed
+
+            pdf.blacklist.append(blacklist)
+
+            db.session.add(blacklist)
+
+        db.session.add(pdf)
+        db.session.commit()
+
 
 
 @celery.task(name="tasks.generate_thumbnail")

@@ -7,3 +7,5 @@ redis
 WTForms
 flask_migrate
 raven
+tabula-py
+PyPDF2

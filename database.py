@@ -19,6 +19,11 @@ user_role_association_table = db.Table('user_role_association', BaseTable.metada
     db.Column('role_id', db.Integer, db.ForeignKey('role.id'))
 )
 
+blacklist_pdf_association_table = db.Table('blacklist_pdf_association', BaseTable.metadata,
+    db.Column('blacklist_id', db.Integer, db.ForeignKey('blacklist.id')),
+    db.Column('pdf_id', db.Integer, db.ForeignKey('pdf.id'))
+)
+
 
 class User(BaseTable):
     __tablename__ = 'user'
@@ -103,8 +108,18 @@ class Blacklist(BaseTable):
     thumbnail = db.Column(db.Boolean)
     signed = db.Column(db.Boolean)
     ssl = db.Column(db.Boolean)
-    date = db.Column(db.DateTime)
+    dns_date_published = db.Column(db.DateTime)
+    dns_date_removed = db.Column(db.DateTime)
+    bank_account_date_published = db.Column(db.DateTime)
+    bank_account_date_removed = db.Column(db.DateTime)
+    last_crawl = db.Column(db.DateTime)
     note = db.Column(db.String(255))
+
+    pdfs = relationship(
+        "Pdf",
+        secondary=blacklist_pdf_association_table,
+        back_populates="blacklist")
+
 
 class BlockingLog(BaseTable):
     __tablename__ = 'blocking_log'
@@ -119,3 +134,23 @@ class ApiLog(BaseTable):
     id = db.Column(db.Integer, primary_key=True)
     remote_addr = db.Column(db.String(255))
     requests = db.Column(db.Integer)
+
+class Pdf(BaseTable):
+    __tablename__ = 'pdf'
+    id = db.Column(db.Integer, primary_key=True)
+    sum = db.Column(db.String(32))
+    name = db.Column(db.Text)
+    signed = db.Column(db.Boolean)
+    ssl = db.Column(db.Boolean)
+    parsed = db.Column(db.Text)
+    size = db.Column(db.Integer)
+    title = db.Column(db.Text)
+    author = db.Column(db.Text)
+    creator = db.Column(db.Text)
+    format = db.Column(db.String(255))
+    pages = db.Column(db.Integer)
+
+    blacklist = relationship(
+        "Blacklist",
+        secondary=blacklist_pdf_association_table,
+        back_populates="pdfs")
