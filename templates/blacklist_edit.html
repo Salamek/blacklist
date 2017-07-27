@@ -20,19 +20,22 @@
                         {{render_field(form.dns, 'form-group', _('DNS'))}}
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12">
-                        {{render_field(form.date, 'form-group', _('Date'))}}
+                        {{render_field(form.dns_date_published, 'form-group', _('DNS published date'))}}
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        {{render_field(form.dns_date_removed, 'form-group', _('DNS removed date'))}}
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        {{render_field(form.bank_account_date_published, 'form-group', _('Bank account published date'))}}
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        {{render_field(form.bank_account_date_removed, 'form-group', _('Bank account removed date'))}}
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12">
                         {{render_field(form.bank_account, 'form-group', _('Bank account'))}}
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-12">
                         {{render_field(form.note, 'form-group', _('Note'))}}
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        {{render_checkbox(form.ssl, _('SSL'))}}
-                    </div>
-                    <div class="col-xs-12 col-sm-12 col-md-12">
-                        {{render_checkbox(form.signed, _('Signed'))}}
                     </div>
                     <div class="row">
                         <div class="col-xs-12 col-sm-12 col-md-12">

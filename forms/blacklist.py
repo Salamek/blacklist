@@ -7,10 +7,11 @@ __date__ = "$26.7.2017 19:33:05$"
 
 class NewForm(Form):
     dns = StringField(None, [validators.Length(min=3, max=255)])
-    date = StringField(None, [validators.Length(min=1, max=60)])
+    dns_date_published = StringField(None, [validators.Length(min=1, max=60)])
+    dns_date_removed = StringField(None, [validators.Length(min=1, max=60)])
+    bank_account_date_published = StringField(None, [validators.Length(min=1, max=60)])
+    bank_account_date_removed = StringField(None, [validators.Length(min=1, max=60)])
     bank_account = StringField(None, [validators.Length(min=1, max=60)])
-    signed = BooleanField(None, [validators.Optional()])
-    ssl = BooleanField(None, [validators.Optional()])
     note = TextAreaField(None, [validators.Optional()])
 
     def __init__(self, *args, **kwargs):
@@ -31,10 +32,11 @@ class NewForm(Form):
 class EditForm(Form):
     id = HiddenField()
     dns = StringField(None, [validators.Length(min=3, max=255)])
-    date = StringField(None, [validators.Length(min=1, max=60)])
+    dns_date_published = StringField(None, [validators.Length(min=1, max=60)])
+    dns_date_removed = StringField(None, [validators.Length(min=1, max=60)])
+    bank_account_date_published = StringField(None, [validators.Length(min=1, max=60)])
+    bank_account_date_removed = StringField(None, [validators.Length(min=1, max=60)])
     bank_account = StringField(None, [validators.Length(min=1, max=60)])
-    signed = BooleanField(None, [validators.Optional()])
-    ssl = BooleanField(None, [validators.Optional()])
     note = TextAreaField(None, [validators.Optional()])
 
     def __init__(self, *args, **kwargs):

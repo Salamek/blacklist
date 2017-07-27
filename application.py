@@ -5,6 +5,7 @@ from controllers.Api import api
 from controllers.Home import home
 from controllers.User import user
 from controllers.Blacklist import blacklist
+from controllers.Crawl import crawl
 from database import db
 from flask import Flask, url_for, request
 from flask_migrate import Migrate
@@ -48,5 +49,6 @@ def create_application():
     app.register_blueprint(api, url_prefix='/api')
     app.register_blueprint(user, url_prefix='/user')
     app.register_blueprint(blacklist, url_prefix='/blacklist')
+    app.register_blueprint(crawl, url_prefix='/crawl')
 
     return app

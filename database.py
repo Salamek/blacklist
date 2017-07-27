@@ -106,8 +106,6 @@ class Blacklist(BaseTable):
     dns = db.Column(db.String(255), unique=True)
     bank_account = db.Column(db.String(255))
     thumbnail = db.Column(db.Boolean)
-    signed = db.Column(db.Boolean)
-    ssl = db.Column(db.Boolean)
     dns_date_published = db.Column(db.DateTime)
     dns_date_removed = db.Column(db.DateTime)
     bank_account_date_published = db.Column(db.DateTime)
@@ -117,6 +115,8 @@ class Blacklist(BaseTable):
 
     pdfs = relationship(
         "Pdf",
+        order_by="Pdf.updated.desc()",
+        lazy="dynamic",
         secondary=blacklist_pdf_association_table,
         back_populates="blacklist")
 
@@ -152,5 +152,6 @@ class Pdf(BaseTable):
 
     blacklist = relationship(
         "Blacklist",
+        lazy="dynamic",
         secondary=blacklist_pdf_association_table,
         back_populates="pdfs")

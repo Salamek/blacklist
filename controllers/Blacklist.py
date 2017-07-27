@@ -33,11 +33,12 @@ def new_blacklist():
     if flask.request.method == 'POST' and form.validate():
         blacklist_new = Blacklist()
         blacklist_new.dns = form.dns.data
-        blacklist_new.date = form.date.data
+        blacklist_new.dns_date_published = form.dns_date_published.data
+        blacklist_new.dns_date_removed = form.dns_date_removed.data
+        blacklist_new.bank_account_date_published = form.bank_account_date_published.data
+        blacklist_new.bank_account_date_removed = form.bank_account_date_removed.data
         blacklist_new.bank_account = form.bank_account.data
         blacklist_new.note = form.note.data
-        blacklist_new.ssl = form.ssl.data
-        blacklist_new.signed = form.signed.data
         db.session.add(blacklist_new)
         db.session.commit()
 
@@ -59,19 +60,21 @@ def edit_blacklist(blacklist_id):
         flask.request.form,
         dns=blacklist_detail.dns,
         id=blacklist_detail.id,
-        date=blacklist_detail.date,
+        dns_date_published=blacklist_detail.dns_date_published,
+        dns_date_removed=blacklist_detail.dns_date_removed,
+        bank_account_date_published=blacklist_detail.bank_account_date_published,
+        bank_account_date_removed=blacklist_detail.bank_account_date_removed,
         bank_account=blacklist_detail.bank_account,
-        note=blacklist_detail.note,
-        ssl=blacklist_detail.ssl,
-        signed=blacklist_detail.signed
+        note=blacklist_detail.note
     )
     if flask.request.method == 'POST' and form.validate():
-        blacklist_detail.date = form.date.data
+        blacklist_detail.dns_date_published = form.dns_date_published.data
+        blacklist_detail.dns_date_removed = form.dns_date_removed.data
+        blacklist_detail.bank_account_date_published = form.bank_account_date_published.data
+        blacklist_detail.bank_account_date_removed = form.bank_account_date_removed.data
         blacklist_detail.bank_account = form.bank_account.data
         blacklist_detail.note = form.note.data
         blacklist_detail.dns = form.dns.data
-        blacklist_detail.ssl = form.ssl.data
-        blacklist_detail.signed = form.signed.data
         db.session.add(blacklist_detail)
         db.session.commit()
         celery = create_celery(flask.current_app)

@@ -20,13 +20,6 @@ __date__ = "$26.7.2017 19:33:05$"
 
 api = Blueprint('api', __name__)
 
-@api.route('/test')
-def test():
-    celery = create_celery(current_app)
-    celery.send_task('tasks.crawl_blacklist', args=())
-
-    return jsonify({}), 200
-
 @api.route('/doc', methods=['GET'])
 def get_doc():
     return render_template('api_doc.html')
@@ -96,15 +89,20 @@ def get_blacklist(page):
 
     data_ret = []
     for row in paginator.items:
+        last_pdf = row.pdfs.first()
+
         data_ret.append({
             'id': row.id,
             'dns': row.dns,
             'bank_account': row.bank_account,
             'has_thumbnail': row.thumbnail,
             'thumbnail': url_for('static', filename='img/thumbnails/thumbnail_{}.png'.format(row.id), _external=True) if row.thumbnail else None,
-            'signed': row.signed,
-            'ssl': row.ssl,
-            'date': row.date,
+            'signed': last_pdf.signed,
+            'ssl': last_pdf.ssl,
+            'dns_date_published': row.dns_date_published,
+            'dns_date_removed': row.dns_date_removed,
+            'bank_account_date_published': row.bank_account_date_published,
+            'bank_account_date_removed': row.bank_account_date_removed,
             'note': row.note,
             'updated': row.updated,
             'created': row.created

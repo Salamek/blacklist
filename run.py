@@ -13,6 +13,7 @@ from flask_login import LoginManager
 from flask_login import current_user
 from flask_babel import Babel, gettext, ngettext, format_datetime, format_date
 from tools.Acl import Acl
+from tools.Helpers import format_bytes
 
 from application import create_application
 
@@ -39,8 +40,9 @@ def before_request():
 
     menu_items = []
     menu_items.append(nav.Item('Home', 'home.get_home'))
+    menu_items.append(nav.Item('PDF Crawl log', 'crawl.get_crawl'))
     menu_items.append(nav.Item('API', 'api.get_doc'))
-    menu_items.append(nav.Item('API Endpoint', 'api.get_blacklist'))
+
     if current_user.is_authenticated and Acl.validate([Role.ADMIN], current_user):
         menu_items.append(nav.Item('Users', 'user.get_user'))
         menu_items.append(nav.Item('Blacklist', 'blacklist.get_blacklist'))
@@ -101,6 +103,11 @@ def fix_url_filter(url):
     if not url.startswith('http'):
         url = 'http://{}'.format(url)
     return url
+
+@app.template_filter('format_bytes')
+def format_bytes_filter(bytes):
+    return format_bytes(bytes)
+
 
 @app.template_filter('format_boolean')
 def format_boolean_filter(bool):

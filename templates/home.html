@@ -40,9 +40,10 @@
             {{ _('DNS') }}: {{item.dns_date_published|format_date}} - {{item.dns_date_removed|format_date if item.dns_date_removed else '∞'}}<br>
             {{ _('Bank account') }}: {{item.bank_account_date_published|format_date}} - {{item.bank_account_date_removed|format_date if item.bank_account_date_removed else '∞'}}
         </td>
-        <td class="text-center">{{item.signed|format_boolean|safe}}</td>
-        <td class="text-center">{{item.ssl|format_boolean|safe}}</td>
-        <td class="text-center">{{item.ssl or item.signed|format_boolean|safe}}</td>
+        {% set last_pdf = item.pdfs.first() %}
+        <td class="text-center">{{last_pdf.signed|format_boolean|safe}}</td>
+        <td class="text-center">{{last_pdf.ssl|format_boolean|safe}}</td>
+        <td class="text-center">{{(last_pdf.ssl or last_pdf.signed)|format_boolean|safe}}</td>
     </tr>
     {% endfor %}
     </tbody>
