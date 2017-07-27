@@ -1,6 +1,6 @@
 from flask import jsonify, Blueprint, request, url_for, current_app, render_template
 from task import create_celery
-from database import db, Role, Blacklist
+from database import db, Role, Blacklist, BlockingLog
 
 
 try:
@@ -26,7 +26,7 @@ def get_doc():
     return render_template('api_doc.html')
 
 
-@api.route('/image/<int:blacklist_id>')
+@api.route('/image/<int:blacklist_id>', methods=['GET'])
 def get_image(blacklist_id):
     working_images = 2
 
@@ -59,10 +59,27 @@ def get_image(blacklist_id):
 
     return jsonify(images_absolute), 200
 
+@api.route('/blocks/<int:blacklist_id>', methods=['POST'])
+def log_blocks(blacklist_id):
+
+    if 'tests' not in request.json or 'success' not in request.json:
+        return jsonify({'error': 'Wrong arguments'}), 400
+
+    tests = int(request.json['tests'])
+    success = int(request.json['success'])
+
+    celery = create_celery(current_app)
+    celery.send_task('tasks.log_block', args=(blacklist_id, request.remote_addr, tests, success,))
+
+    return jsonify({}), 200
+
 @api.route('/blacklist', methods=['GET'], defaults={'page': 1})
 @api.route('/blacklist/page/<int:page>', methods=['GET'])
 def get_blacklist(page):
     data = Blacklist.query.filter().order_by(Blacklist.created.desc())
+
+    celery = create_celery(current_app)
+    celery.send_task('tasks.log_api', args=(request.remote_addr,))
 
     if 'per_page' in request.args:
         per_page = int(request.args['per_page'])

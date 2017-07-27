@@ -4,9 +4,26 @@ $(function () {
 
     $('.blocking-status').each(function(){
         var url = $(this).data('url');
+        var result_url = $(this).data('result');
         var $that = $(this);
         var test_done = function(images_cnt, loaded_success_cnt)
         {
+            $.ajax({
+                type: 'POST',
+                url: result_url,
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    'tests': images_cnt,
+                    'success': loaded_success_cnt
+                }),
+                success: function(images){
+                    console.log('Block info send');
+                },
+                error: function() {
+                    console.log('Failed to send block info');
+                }
+            });
+
             if (images_cnt == loaded_success_cnt)
             {
                 $that.html('Not blocked (' + loaded_success_cnt + '/' + images_cnt + ')');

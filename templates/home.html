@@ -33,7 +33,7 @@
         <td><a href="{{item.dns|fix_url}}" target="_blank">{{item.dns}}</a></td>
         <td>{{item.bank_account}}</td>
         <td>{{item.note}}</td>
-        <td class="text-center"><div class="label blocking-status label-info" data-url="{{url_for('api.get_image', blacklist_id=item.id)}}">Checking...</div></td>
+        <td class="text-center"><div class="label blocking-status label-info" data-url="{{url_for('api.get_image', blacklist_id=item.id)}}" data-result="{{url_for('api.log_blocks', blacklist_id=item.id)}}">Checking...</div></td>
         <td>{{item.updated|format_datetime}}</td>
         <td>{{item.created|format_datetime}}</td>
         <td>{{item.date|format_datetime}}</td>

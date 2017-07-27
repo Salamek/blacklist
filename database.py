@@ -105,3 +105,17 @@ class Blacklist(BaseTable):
     ssl = db.Column(db.Boolean)
     date = db.Column(db.DateTime)
     note = db.Column(db.String(255))
+
+class BlockingLog(BaseTable):
+    __tablename__ = 'blocking_log'
+    id = db.Column(db.Integer, primary_key=True)
+    blacklist_id = db.Column(db.Integer, db.ForeignKey('blacklist.id'))
+    remote_addr = db.Column(db.String(255))
+    tests = db.Column(db.Integer)
+    success = db.Column(db.Integer)
+
+class ApiLog(BaseTable):
+    __tablename__ = 'api_log'
+    id = db.Column(db.Integer, primary_key=True)
+    remote_addr = db.Column(db.String(255))
+    requests = db.Column(db.Integer)
