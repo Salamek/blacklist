@@ -34,10 +34,7 @@ def get_image(blacklist_id):
     # Find all images on website
     website = urllib.request.urlopen(url)
     html = website.read()
-    if (sys.version_info > (3, 0)):
-        pat = re.compile(rb'<img [^>]*src="([^"]+)')
-    else:
-        pat = re.compile(r'<img [^>]*src="([^"]+)')
+    pat = re.compile(b'<img [^>]*src="([^"]+)')
     images = pat.findall(html)
 
     # Find working_images for testing
