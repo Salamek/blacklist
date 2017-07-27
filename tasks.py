@@ -1,7 +1,9 @@
 # -*- encoding: utf-8 -*-
 from task import create_celery
+from PIL import Image
 from application import create_application
 from database import Blacklist, ApiLog, BlockingLog, Pdf, db
+from sqlalchemy import or_
 import subprocess
 import hashlib
 import os
@@ -110,8 +112,6 @@ def crawl_blacklist():
                 blacklist.dns = dns
                 blacklist.last_crawl = None
             blacklist.bank_account = bank_account
-            blacklist.signed = pdf.signed  # !FIXME REMOVE and read from PDF directly
-            blacklist.ssl = pdf.ssl  # !FIXME REMOVE and read from PDF directly
             blacklist.dns_date_published = dns_date_published
             blacklist.dns_date_removed = dns_date_removed
             blacklist.bank_account_date_published = bank_account_date_published
@@ -124,13 +124,40 @@ def crawl_blacklist():
     db.session.add(pdf)
     db.session.commit()
 
+    # trigger crawl_dns_info
+    celery.send_task('tasks.crawl_dns_info', args=(False,))
 
 
-@celery.task(name="tasks.generate_thumbnail")
-def generate_thumbnail(blacklist_id):
-    blacklist_detail = Blacklist.query.filter_by(id=blacklist_id).first()
-    file_path = os.path.join(app.config['THUMBNAIL_FOLDER'], 'thumbnail_{}.png'.format(blacklist_detail.id))
-    subprocess.Popen(["xvfb-run", "--", "wkhtmltoimage", '--width', '1280', blacklist_detail.dns, file_path])
-    blacklist_detail.thumbnail = True
-    db.session.add(blacklist_detail)
+
+@celery.task(name="tasks.crawl_dns_info")
+def crawl_dns_info(only_new=False):
+    from_date = datetime.datetime.today() - datetime.timedelta(days=7)
+
+    if only_new:
+        blacklist_details = Blacklist.query.filter_by(last_crawl=None)
+    else:
+        blacklist_details = Blacklist.query.filter(or_(Blacklist.last_crawl < from_date, Blacklist.last_crawl == None))
+
+    for blacklist_detail in blacklist_details:
+        try:
+            file_path = os.path.join(app.config['THUMBNAIL_FOLDER'], '{}.png'.format(blacklist_detail.id))
+            thumbnail_file_path = os.path.join(app.config['THUMBNAIL_FOLDER'], 'thumbnail_{}.png'.format(blacklist_detail.id))
+            subprocess.call(["xvfb-run", "--", "wkhtmltoimage", '--width', '1280', blacklist_detail.dns, file_path])
+
+            size = (100, 200)
+            image = Image.open(file_path)
+            image.thumbnail(size, Image.ANTIALIAS)
+            background = Image.new('RGBA', size, (255, 255, 255, 0))
+            background.paste(
+                image, (int((size[0] - image.size[0]) // 2), int((size[1] - image.size[1]) // 2))
+            )
+            background.save(thumbnail_file_path)
+
+            blacklist_detail.thumbnail = True
+        except Exception as e:
+            print('Failed to obtain DNS thumbnail: {}'.format(e))
+            blacklist_detail.thumbnail = False
+
+        blacklist_detail.last_crawl = datetime.datetime.now()
+        db.session.add(blacklist_detail)
     db.session.commit()

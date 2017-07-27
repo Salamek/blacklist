@@ -39,11 +39,12 @@ def new_blacklist():
         blacklist_new.bank_account_date_removed = form.bank_account_date_removed.data
         blacklist_new.bank_account = form.bank_account.data
         blacklist_new.note = form.note.data
+        blacklist_new.last_crawl = None
         db.session.add(blacklist_new)
         db.session.commit()
 
         celery = create_celery(flask.current_app)
-        res = celery.send_task('tasks.generate_thumbnail', args=(blacklist_new.id,))
+        celery.send_task('tasks.crawl_dns_info', args=(True,))
 
         flask.flash('New blacklist item was added successfully.', 'success')
         return flask.redirect(flask.url_for('blacklist.get_blacklist'))
@@ -74,11 +75,16 @@ def edit_blacklist(blacklist_id):
         blacklist_detail.bank_account_date_removed = form.bank_account_date_removed.data
         blacklist_detail.bank_account = form.bank_account.data
         blacklist_detail.note = form.note.data
+
+        if blacklist_detail.dns != form.dns.data:
+            blacklist_detail.last_crawl = None
+
         blacklist_detail.dns = form.dns.data
+
         db.session.add(blacklist_detail)
         db.session.commit()
         celery = create_celery(flask.current_app)
-        res = celery.send_task('tasks.generate_thumbnail', args=(blacklist_detail.id,))
+        celery.send_task('tasks.crawl_dns_info', args=(True,))
         flask.flash('Domain was saved successfully.', 'success')
         return flask.redirect(flask.url_for('blacklist.get_blacklist'))
 

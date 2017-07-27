@@ -10,3 +10,10 @@ class Blacklist(object):
 
     BLACKLIST_SOURCE = 'http://www.mfcr.cz/assets/cs/media/Zverejnovane-udaje-ze-Seznamu-nepovolenych-internetovych-her_v1.pdf'
     PDF_STORAGE = 'static/pdf'
+
+    CELERYBEAT_SCHEDULE = {
+        'crawl_blacklist-every-12-hours': {
+            'task': 'tasks.crawl_blacklist',
+            'schedule': timedelta(hours=12)
+        },
+    }
