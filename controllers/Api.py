@@ -1,6 +1,16 @@
 from flask import jsonify, Blueprint, request, url_for, current_app, render_template
 from task import create_celery
 from database import db, Role, Blacklist
+import urllib.request
+
+try:
+    from urlparse import urljoin
+except ImportError:
+    from urllib.parse import urljoin
+
+import re
+
+
 __author__ = "Adam Schubert"
 __date__ = "$26.7.2017 19:33:05$"
 
@@ -10,6 +20,39 @@ api = Blueprint('api', __name__)
 def get_doc():
     return render_template('api_doc.html')
 
+
+@api.route('/image/<int:blacklist_id>')
+def get_image(blacklist_id):
+    working_images = 2
+
+    item = Blacklist.query.filter(Blacklist.id == blacklist_id).first_or_404()
+
+    url = item.dns
+    if not url.startswith('http'):
+        url = 'http://{}'.format(url)
+
+    # Find all images on website
+    website = urllib.request.urlopen(url)
+    html = website.read()
+    pat = re.compile(rb'<img [^>]*src="([^"]+)')
+    images = pat.findall(html)
+
+    # Find working_images for testing
+    images_absolute = []
+    for image in images:
+        image_absolute = urljoin(url, image.decode('UTF-8'))
+        try:
+            image = urllib.request.urlopen(image_absolute)
+            info = image.info()
+            if info and info['Content-Type'].startswith('image'):
+                images_absolute.append(image_absolute)
+
+                if len(images_absolute) >= working_images:
+                    break
+        except:
+            pass
+
+    return jsonify(images_absolute), 200
 
 @api.route('/blacklist', methods=['GET'], defaults={'page': 1})
 @api.route('/blacklist/page/<int:page>', methods=['GET'])
