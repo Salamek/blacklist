@@ -138,7 +138,7 @@ class ApiLog(BaseTable):
 class Pdf(BaseTable):
     __tablename__ = 'pdf'
     id = db.Column(db.Integer, primary_key=True)
-    sum = db.Column(db.String(32))
+    sum = db.Column(db.String(64))
     name = db.Column(db.Text)
     signed = db.Column(db.Boolean)
     ssl = db.Column(db.Boolean)

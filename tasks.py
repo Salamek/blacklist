@@ -59,16 +59,16 @@ def crawl_blacklist():
     response = urlopen(app.config['BLACKLIST_SOURCE'])
     pdf_content = response.read()
 
-    md5sum = hashlib.md5(pdf_content).hexdigest()
+    pdf_sum = hashlib.sha256(pdf_content).hexdigest()
 
     # We dont have this PDF yet, parse it
-    pdf = Pdf.query.filter_by(sum=md5sum).first()
+    pdf = Pdf.query.filter_by(sum=pdf_sum).first()
     if pdf:
         print('This PDF is already crawled ID:{}'.format(pdf.id))
         pdf.updated = datetime.datetime.now()
     else:
         # Store PDF
-        file_path = os.path.join(app.config['PDF_STORAGE'], '{}.pdf'.format(md5sum))
+        file_path = os.path.join(app.config['PDF_STORAGE'], '{}.pdf'.format(pdf_sum))
         with open(file_path, 'wb') as f:
             f.write(pdf_content)
 
@@ -78,7 +78,7 @@ def crawl_blacklist():
         csv_parsed = tabula.read_pdf(file_path, spreadsheet=True).to_csv(encoding="utf-8")
 
         pdf = Pdf()
-        pdf.sum = md5sum
+        pdf.sum = pdf_sum
         pdf.name = os.path.basename(response.geturl())
         pdf.signed = False  # !FIXME Check signature
         pdf.ssl = response.geturl().startswith('https')  # We dont need better check,  urlopen checks SSL cert validity
