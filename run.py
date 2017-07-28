@@ -8,7 +8,6 @@ from flask import jsonify, g
 from flask_navigation import Navigation
 
 from raven.contrib.flask import Sentry
-from flask.ext.bower import Bower
 from flask_login import LoginManager
 from flask_login import current_user
 from flask_babel import Babel, gettext, ngettext, format_datetime, format_date
@@ -19,7 +18,6 @@ from application import create_application
 
 app = create_application()
 
-Bower(app)
 nav = Navigation(app)
 login_manager = LoginManager()
 login_manager.init_app(app)

@@ -1,4 +1,3 @@
-flask-bower
 flask-login
 Flask-Navigation
 Flask-Babel

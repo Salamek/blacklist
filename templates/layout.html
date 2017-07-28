@@ -5,27 +5,22 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="{{name}}">
+    <meta name="description" content="{{_('Czech blacklist')}}">
+    <meta name="keywors" content="{{_('czech blacklist, bureš, censorship')}}">
     <meta name="author" content="Adam Schubert">
 
-
-    <title>Blacklist</title>
+    <title>{{_('Czech blacklist')}}</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
-    <link href='https://fonts.googleapis.com/css?family=Orbitron|Lobster|Indie+Flower' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='bower_components/font-awesome/css/font-awesome.min.css') }}">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='bower_components/bootstrap/dist/css/bootstrap.min.css') }}">
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
-    <link rel=stylesheet type=text/css href="{{ url_for('bower.static', filename='eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css') }}">
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
 </head>
 
 <body>
-<a href="https://github.com/Salamek/blacklist"><img style="position: absolute; top: 0; right: 0; border: 0; z-index: 1000" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+<a href="https://github.com/Salamek/blacklist">
+    <img class="github" src="{{ url_for('static', filename='img/github.png') }}" alt="Fork me on GitHub">
+</a>
 <!-- Fixed navbar -->
 <nav class="navbar navbar-default" role="navigation">
     <div class="container">
@@ -78,19 +73,16 @@
 <!-- /container -->
 
 <footer class="footer">
-      <div class="container">
-          <p class="text-muted text-center">© <a href="https://www.salamek.cz">www.salamek.cz</a></p>
-      </div>
-    </footer>
+  <div class="container">
+      <p class="text-muted text-center">© <a href="https://www.salamek.cz">www.salamek.cz</a></p>
+  </div>
+</footer>
 
 <!-- Bootstrap core JavaScript
   ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB2g9pjN5Lv1ObrK4SH5zuhljSCwV5sAxo"></script>
-<script src="{{ url_for('bower.static', filename='moment/min/moment.min.js') }}"></script>
-<script src="{{ url_for('bower.static', filename='eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js') }}"></script>
+<script src="{{ url_for('static', filename='bower_components/jquery/dist/jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='bower_components/bootstrap/dist/js/bootstrap.min.js') }}"></script>
 <script src="{{ url_for('static', filename='main.js') }}"></script>
 </body>
 
