@@ -7,6 +7,7 @@ Original blacklist is in [PDF](http://www.mfcr.cz/assets/cs/media/Zverejnovane-u
 # Features
 
 * JSON API
+* Auto crawling and parsing of PDF
 * List of blacklist items with blocking info, URL, page thumbnail and paging
 * Administration of blacklist
 * Your provider blocking info
