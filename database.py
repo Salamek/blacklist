@@ -149,6 +149,7 @@ class Pdf(BaseTable):
     creator = db.Column(db.Text)
     format = db.Column(db.String(255))
     pages = db.Column(db.Integer)
+    version = db.Column(db.Integer)
 
     blacklist = relationship(
         "Blacklist",

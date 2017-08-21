@@ -19,9 +19,9 @@ import PyPDF2
 from tools.Validators import Validators
 
 try:
-    from urllib2 import urlopen
+    from urllib2 import urlopen, HTTPError
 except ImportError:
-    from urllib.request import urlopen
+    from urllib.request import urlopen, HTTPError
 
 
 app = create_application()
@@ -56,7 +56,25 @@ def log_api(remote_addr):
 @celery.task(name="tasks.crawl_blacklist")
 def crawl_blacklist():
     date_format = "%d.%m.%Y"
-    response = urlopen(app.config['BLACKLIST_SOURCE'])
+
+    # Find next PDF version
+    version_try_max = 5
+    max_version_found = 0
+
+    last_version_found = Pdf.query.order_by(Pdf.version.desc()).first()
+    if last_version_found:
+        last_version = last_version_found.version
+    else:
+        last_version = 1
+
+    for check_version in range(last_version, last_version + version_try_max):
+        try:
+            urlopen(app.config['BLACKLIST_SOURCE'].format(version=check_version))
+            max_version_found = max(check_version, max_version_found)
+        except HTTPError:
+            pass
+
+    response = urlopen(app.config['BLACKLIST_SOURCE'].format(version=max_version_found))
     pdf_content = response.read()
 
     pdf_sum = hashlib.sha256(pdf_content).hexdigest()
@@ -89,6 +107,7 @@ def crawl_blacklist():
         pdf.creator = pdf_info.creator
         pdf.format = '?'  # FIXME
         pdf.pages = pdf_toread.getNumPages()
+        pdf.version = max_version_found
 
         csv_data = csv.reader(csv_parsed.splitlines(), delimiter=',')
         for row in csv_data:
@@ -128,7 +147,6 @@ def crawl_blacklist():
 
     # trigger crawl_dns_info
     celery.send_task('tasks.crawl_dns_info', args=(False,))
-
 
 
 @celery.task(name="tasks.crawl_dns_info")
