@@ -10,7 +10,7 @@ class Blacklist(object):
     CELERY_IMPORTS = ('tasks',)
     THUMBNAIL_FOLDER = 'static/img/thumbnails'
 
-    BLACKLIST_SOURCE = 'http://www.mfcr.cz/assets/cs/media/Zverejnovane-udaje-ze-Seznamu-nepovolenych-internetovych-her_v1.pdf'
+    BLACKLIST_SOURCE = 'http://www.mfcr.cz/assets/cs/media/Zverejnovane-udaje-ze-Seznamu-nepovolenych-internetovych-her_v{version}.pdf'
     PDF_STORAGE = 'static/pdf'
 
     CELERYBEAT_SCHEDULE = {
