@@ -31,6 +31,7 @@ if not app.debug:
     file_handler.setLevel(logging.WARNING)
     app.logger.addHandler(file_handler)
 
+
 @app.before_request
 def before_request():
     g.last_crawled_pdf = Pdf.query.order_by(Pdf.updated.desc()).first()
@@ -48,9 +49,11 @@ def before_request():
 
     nav.Bar('top', menu_items)
 
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(user_id)
+
 
 @app.cli.command()
 def initdb():
@@ -58,6 +61,7 @@ def initdb():
         db.create_all()
         db.session.commit()
     click.echo('Init the db')
+
 
 @app.cli.command()
 def default_data():
@@ -89,13 +93,16 @@ def default_data():
     db.session.add(admin)
     db.session.commit()
 
+
 @app.template_filter('format_datetime')
 def format_datetime_filter(date_time):
     return format_datetime(date_time)
 
+
 @app.template_filter('format_date')
 def format_date_filter(date_time):
     return format_date(date_time)
+
 
 @app.template_filter('fix_url')
 def fix_url_filter(url):
@@ -103,18 +110,17 @@ def fix_url_filter(url):
         url = 'http://{}'.format(url)
     return url
 
+
 @app.template_filter('format_bytes')
-def format_bytes_filter(bytes):
-    return format_bytes(bytes)
+def format_bytes_filter(bytes_to_format):
+    return format_bytes(bytes_to_format)
 
 
 @app.template_filter('format_boolean')
-def format_boolean_filter(bool):
-    return '<div class="label label-success">Yes</div>' if bool else '<div class="label label-danger">No</div>'
+def format_boolean_filter(bool_to_format):
+    return '<div class="label label-success">Yes</div>' if bool_to_format else '<div class="label label-danger">No</div>'
 
-# **********
-# ERRORS
-# **********
+
 @app.errorhandler(404)
 def not_found(error):
     return jsonify({'message': str(error)}), 404
