@@ -38,7 +38,10 @@ def get_image(blacklist_id):
         url = 'http://{}'.format(url)
 
     # Find all images on website
-    website = urlopen(url)
+    try:
+        website = urlopen(url)
+    except:
+        return jsonify({'message': 'Failed to load page for test images'}), 500
     html = website.read()
     pat = re.compile(b'<img [^>]*src="([^"]+)')
     images = pat.findall(html)
