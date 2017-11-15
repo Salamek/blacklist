@@ -51,6 +51,7 @@ def new_blacklist():
 
     return flask.render_template('blacklist_new.html', form=form)
 
+
 @blacklist.route('/edit/<int:blacklist_id>', methods=['GET', 'POST'])
 @Acl.validate_path([Role.ADMIN], current_user)
 @login_required
@@ -89,6 +90,7 @@ def edit_blacklist(blacklist_id):
         return flask.redirect(flask.url_for('blacklist.get_blacklist'))
 
     return flask.render_template('blacklist_edit.html', form=form, blacklist_detail=blacklist_detail)
+
 
 @blacklist.route('/delete/<int:blacklist_id>', methods=['GET'])
 @login_required

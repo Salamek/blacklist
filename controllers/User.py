@@ -51,6 +51,7 @@ def new_user():
 
     return flask.render_template('user_new.html', form=form)
 
+
 @user.route('/edit/<int:user_id>', methods=['GET', 'POST'])
 @Acl.validate_path([Role.ADMIN], current_user)
 @login_required
@@ -76,6 +77,7 @@ def edit_user(user_id):
 
     return flask.render_template('user_edit.html', form=form, user_detail=user_detail)
 
+
 @user.route('/delete/<int:user_id>', methods=['GET'])
 @login_required
 @Acl.validate_path([Role.ADMIN], current_user)
@@ -86,8 +88,6 @@ def delete_user(user_id):
     flask.flash('User was deleted successfully.', 'success')
 
     return flask.redirect(flask.url_for('user.get_user'))
-
-
 
 
 @user.route("/logout")

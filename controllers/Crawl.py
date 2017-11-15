@@ -21,6 +21,7 @@ def get_crawl(page):
     pagination = Pdf.query.filter().order_by(Pdf.created.desc()).paginate(page, PER_PAGE)
     return flask.render_template('crawl.html', pagination=pagination)
 
+
 @login_required
 @Acl.validate_path([Role.ADMIN], current_user)
 @crawl.route('/trigger', methods=['GET'])

@@ -5,6 +5,7 @@ from flask_babel import Babel, gettext, ngettext
 __author__ = "Adam Schubert"
 __date__ = "$26.7.2017 19:33:05$"
 
+
 class LoginForm(Form):
     username = StringField(None, [validators.Length(min=5, max=35)])
     password = PasswordField(None, [validators.Length(min=5, max=35)])

@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import re
 from flask import jsonify, Blueprint, request, url_for, current_app, render_template
 from task import create_celery
 from database import db, Role, Blacklist, BlockingLog, Pdf
@@ -14,13 +15,12 @@ try:
 except ImportError:
     from urllib.parse import urljoin
 
-import re
-
 
 __author__ = "Adam Schubert"
 __date__ = "$26.7.2017 19:33:05$"
 
 api = Blueprint('api', __name__)
+
 
 @api.route('/doc', methods=['GET'])
 def get_doc():
@@ -60,6 +60,7 @@ def get_image(blacklist_id):
 
     return jsonify(images_absolute), 200
 
+
 @api.route('/blocks/<int:blacklist_id>', methods=['POST'])
 def log_blocks(blacklist_id):
 
@@ -73,6 +74,7 @@ def log_blocks(blacklist_id):
     celery.send_task('tasks.log_block', args=(blacklist_id, request.remote_addr, tests, success,))
 
     return jsonify({}), 200
+
 
 @api.route('/blacklist', methods=['GET'], defaults={'page': 1})
 @api.route('/blacklist/page/<int:page>', methods=['GET'])
