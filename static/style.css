@@ -39,5 +39,13 @@ html, body
     z-index: 1000;
 }
 
+/*data option width is not working, dont know dont care*/
+@media (min-width: 768px)
+{
+    .modal-dialog {
+        width: 1024px;
+    }
+}
+
 
 .top-buffer { margin-top:20px; }

@@ -52,6 +52,7 @@ $(function () {
                 $that.addClass('label-danger');
             }
         }
+
         var image_loader = function (images)
         {
             var images_cnt = images.length;
