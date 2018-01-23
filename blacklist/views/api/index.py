@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
 import re
-
+import requests
+from lxml import etree as ElTr
 from flask import jsonify, request, url_for, render_template
 
 from blacklist.models.blacklist import Blacklist
 from blacklist.tasks.blacklist import log_block, log_api
 from blacklist.blueprints import api_index
 
-from urllib.request import urlopen
 from urllib.parse import urljoin
 
 
@@ -33,26 +33,32 @@ def get_image(blacklist_id):
 
     # Find all images on website
     try:
-        website = urlopen(url)
-    except:
-        return jsonify({'message': 'Failed to load page for test images'}), 500
-    html = website.read()
-    pat = re.compile(b'<img [^>]*src="([^"]+)')
-    images = pat.findall(html)
+        website = requests.get(url)
+    except Exception as e:
+        return jsonify({
+            'message': 'Failed to load page for test images',
+            'url': url,
+            'e': str(e)
+        }), 500
+
+    parser = ElTr.HTMLParser(recover=True)
+    el = ElTr.ElementTree(ElTr.fromstring(website.text, parser))
+    root = el.getroot()
+    images = root.iter('img')
 
     # Find working_images for testing
     images_absolute = []
     for image in images:
-        image_absolute = urljoin(url, image.decode('UTF-8'))
+        print(image.get('src'))
+        image_absolute = urljoin(website.url, image.get('src'))
         try:
-            image = urlopen(image_absolute)
-            info = image.info()
-            if info and info['Content-Type'].startswith('image'):
+            image_head = requests.head(image_absolute)
+            if image_head.headers['content-type'].startswith('image'):
                 images_absolute.append(image_absolute)
 
                 if len(images_absolute) >= working_images:
                     break
-        except:
+        except Exception:
             pass
 
     return jsonify(images_absolute), 200

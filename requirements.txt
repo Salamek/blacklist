@@ -9,3 +9,5 @@ raven
 tabula-py
 PyPDF2
 pil
+requests
+lxml
