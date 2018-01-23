@@ -8,7 +8,7 @@
     <thead>
     <tr>
         <th colspan="8" class="text-center">Item info</th>
-        <th colspan="4" class="text-center">Blocking request info</th>
+        <th colspan="1" class="text-center">Blocking request info</th>
     </tr>
     <tr>
         <th>#</th>
@@ -20,9 +20,9 @@
         <th>{{ _('Updated') }}</th>
         <th>{{ _('Created') }}</th>
         <th>{{ _('Published') }}</th>
-        <th class="text-center">{{ _('Valid PDF signature') }}</th>
+        <!--th class="text-center">{{ _('Valid PDF signature') }}</th>
         <th class="text-center">{{ _('Valid source SSL') }}</th>
-        <th class="text-center">{{ _('Trustful') }}</th>
+        <th class="text-center">{{ _('Trustful') }}</th-->
     </tr>
     </thead>
     <tbody>
@@ -41,9 +41,9 @@
             {{ _('Bank account') }}: {{item.bank_account_date_published|format_date}} - {{item.bank_account_date_removed|format_date if item.bank_account_date_removed else '∞'}}
         </td>
         {% set last_pdf = item.pdfs.first() %}
-        <td class="text-center">{{last_pdf.signed|format_boolean|safe}}</td>
+        <!--td class="text-center">{{last_pdf.signed|format_boolean|safe}}</td>
         <td class="text-center">{{last_pdf.ssl|format_boolean|safe}}</td>
-        <td class="text-center">{{(last_pdf.ssl or last_pdf.signed)|format_boolean|safe}}</td>
+        <td class="text-center">{{(last_pdf.ssl or last_pdf.signed)|format_boolean|safe}}</td-->
     </tr>
     {% endfor %}
     </tbody>
