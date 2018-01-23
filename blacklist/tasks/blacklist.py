@@ -25,7 +25,7 @@ LOG = getLogger(__name__)
 
 
 @celery.task(bind=True)
-def log_block(blacklist_id, remote_addr, tests, success):
+def log_block(task_id, blacklist_id, remote_addr, tests, success):
     blocking_log = BlockingLog()
     blocking_log.blacklist_id = blacklist_id
     blocking_log.remote_addr = remote_addr
