@@ -1,10 +1,9 @@
 bower_components
 *.pyc
-/config.py
-/static/img/thumbnails/*
-!/static/img/thumbnails/README.md
+/blacklist/static/img/thumbnails/*
+!/blacklist/static/img/thumbnails/README.md
 .idea/*
 __pycache__/
 
-/static/pdf/*
-!/static/pdf/README.md
+/blacklist/static/pdf/*
+!/blacklist/static/pdf/README.md
