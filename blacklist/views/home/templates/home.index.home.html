@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% from 'macros.html' import render_pagination %}
+{% block body %}
+
+<h1>{{ _('Blacklist') }}</h1>
+
+<table class="table table-hover table-bordered">
+    <thead>
+    <tr>
+        <th colspan="8" class="text-center">Item info</th>
+        <th colspan="4" class="text-center">Blocking request info</th>
+    </tr>
+    <tr>
+        <th>#</th>
+        <th>{{ _('Image') }}</th>
+        <th>{{ _('DNS') }}</th>
+        <th>{{ _('Bank account') }}</th>
+        <th>{{ _('Note') }}</th>
+        <th>{{ _('Your provider blocking status') }}</th>
+        <th>{{ _('Updated') }}</th>
+        <th>{{ _('Created') }}</th>
+        <th>{{ _('Published') }}</th>
+        <th class="text-center">{{ _('Valid PDF signature') }}</th>
+        <th class="text-center">{{ _('Valid source SSL') }}</th>
+        <th class="text-center">{{ _('Trustful') }}</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in pagination.items %}
+    <tr>
+        <th scope="row">{{item.id}}</th>
+        <th>{% if item.thumbnail %}<a href="{{ url_for('static', filename='img/thumbnails/{}.png'.format(item.id))}}" title="{{item.dns}}" data-toggle="lightbox" data-width="1024"><img src="{{ url_for('static', filename='img/thumbnails/thumbnail_{}.png'.format(item.id))}}" alt="{{item.dns}}" width="200" height="100"></a>{% endif %}</th>
+        <td><a href="{{item.dns|fix_url}}" target="_blank">{{item.dns}}</a></td>
+        <td>{{item.bank_account}}</td>
+        <td>{{item.note}}</td>
+        <td class="text-center"><div class="label blocking-status label-info" data-url="{{url_for('api.index.get_image', blacklist_id=item.id)}}" data-result="{{url_for('api.index.log_blocks', blacklist_id=item.id)}}">Checking...</div></td>
+        <td>{{item.updated|format_datetime}}</td>
+        <td>{{item.created|format_datetime}}</td>
+        <td>
+            {{ _('DNS') }}: {{item.dns_date_published|format_date}} - {{item.dns_date_removed|format_date if item.dns_date_removed else '∞'}}<br>
+            {{ _('Bank account') }}: {{item.bank_account_date_published|format_date}} - {{item.bank_account_date_removed|format_date if item.bank_account_date_removed else '∞'}}
+        </td>
+        {% set last_pdf = item.pdfs.first() %}
+        <td class="text-center">{{last_pdf.signed|format_boolean|safe}}</td>
+        <td class="text-center">{{last_pdf.ssl|format_boolean|safe}}</td>
+        <td class="text-center">{{(last_pdf.ssl or last_pdf.signed)|format_boolean|safe}}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<div class="text-center">
+{{render_pagination(pagination)}}
+</div>
+{% endblock %}

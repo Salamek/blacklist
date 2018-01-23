@@ -21,6 +21,7 @@ Original blacklist is in [PDF](http://www.mfcr.cz/assets/cs/media/Zverejnovane-u
 # Installation
 
 ```bash
+apt install openjdk-8-jre xvfb wkhtmltoimage
 git clone https://github.com/Salamek/blacklist.git
 cd blacklist
 pip install -r requirements.txt

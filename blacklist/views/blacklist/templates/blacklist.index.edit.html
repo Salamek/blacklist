@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block body %}
+{% from "_formhelpers.html" import render_field, render_checkbox %}
+<div class="row">
+    <div class="col-xs-12 col-sm-8 col-md-4 col-sm-offset-2 col-md-offset-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">{{ _("Edit blacklist item %(dns)s", dns=blacklist_detail.dns) }}</h3>
+            </div>
+            <div class="panel-body">
+                {% if form.errors %}
+                <div class="alert alert-danger">
+                    There was some errors when proccesing a form.
+                    {% for field, errors in form.errors.items() %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                <form method="post" role="form" action="{{url_for('blacklist.index.edit_blacklist', blacklist_id=blacklist_detail.id)}}">
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        {{render_field(form.dns, 'form-group', _('DNS'))}}
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        {{render_field(form.dns_date_published, 'form-group', _('DNS published date'))}}
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        {{render_field(form.dns_date_removed, 'form-group', _('DNS removed date'))}}
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        {{render_field(form.bank_account_date_published, 'form-group', _('Bank account published date'))}}
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        {{render_field(form.bank_account_date_removed, 'form-group', _('Bank account removed date'))}}
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        {{render_field(form.bank_account, 'form-group', _('Bank account'))}}
+                    </div>
+                    <div class="col-xs-12 col-sm-12 col-md-12">
+                        {{render_field(form.note, 'form-group', _('Note'))}}
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12">
+                            <input type="submit" value="{{_('Save')}}" class="btn btn-info btn-block">
+                        </div>
+                    </div>
+                    {{ form.id() }}
+                    {{ form.csrf_token }}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
