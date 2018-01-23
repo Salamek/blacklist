@@ -25,20 +25,20 @@ apt install openjdk-8-jre xvfb wkhtmltoimage
 git clone https://github.com/Salamek/blacklist.git
 cd blacklist
 pip install -r requirements.txt
-export FLASK_APP=run.py
-flask initdb
-flask default_data
+python3 manage.py create_all
+python3 manage.py fixtures
 bower install
-flask run
+python3 manage.py server
+
 ```
 
 default username and password are admin:admin
 
-application uses Celery for background tasks, so you should run run_worker.sh & run_beat.sh if you want them working :)
+application uses Celery for background tasks, so you should run celeryworker & celerybeat if you want them working :)
 
 ```
-./run_worker.sh
-./run_beat.sh
+python3 manage.py celerybeat
+python3 manage.py celeryworker
 ```
 
 # UWSGI
