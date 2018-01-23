@@ -67,10 +67,19 @@ def crawl_blacklist(task_id=None):
 
     for check_version in range(last_version, last_version + flask.current_app.config['BLACKLIST_VERSION_TRY_MAX']):
         try:
+            LOG.info('Trying version {}'.format(check_version))
             urlopen(flask.current_app.config['BLACKLIST_SOURCE'].format(version=check_version))
             max_version_found = max(check_version, max_version_found) if max_version_found else check_version
         except HTTPError:
-            pass
+            # If ve found max version and get error after it, it means that we are overshooting, no need to continue
+            if max_version_found:
+                LOG.info(
+                    'Error thrown for version {0} and version {1} was previously found -> using version {1}'.format(
+                        check_version,
+                        max_version_found
+                    )
+                )
+                break
 
     if max_version_found is None:
         raise Exception('No suitable version of PDF found to download, maybe you will need to raise BLACKLIST_VERSION_TRY_MAX in config')
