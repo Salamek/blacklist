@@ -1,0 +1,46 @@
+## arg 1:  the new package version
+pre_install() {
+        :
+}
+
+## arg 1:  the new package version
+post_install() {
+        # Generate default config
+        systemctl enable redis
+        systemctl restart redis
+        blacklist post_install --config_prod
+        systemctl daemon-reload
+        systemctl start blacklist
+        systemctl enable blacklist
+        systemctl start blacklist_celeryworker
+        systemctl enable blacklist_celeryworker
+        systemctl start blacklist_celerybeat
+        systemctl enable blacklist_celerybeat
+}
+
+## arg 1:  the new package version
+## arg 2:  the old package version
+pre_upgrade() {
+        :
+}
+
+## arg 1:  the new package version
+## arg 2:  the old package version
+post_upgrade() {
+        blacklist migrations upgrade
+        systemctl daemon-reload
+        systemctl restart blacklist
+        systemctl restart blacklist_celeryworker
+        systemctl restart blacklist_celerybeat
+        blacklist check --config_prod
+}
+
+## arg 1:  the old package version
+pre_remove() {
+        :
+}
+
+## arg 1:  the old package version
+post_remove() {
+        :
+}

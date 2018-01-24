@@ -4,7 +4,7 @@
 
 This is a Blacklist
 
-License: GNU GPL 3
+License: GPL-3.0
 Website: https://github.com/Salamek/blacklist
 
 Command details:

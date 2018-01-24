@@ -1,0 +1,12 @@
+[Unit]
+Description=Blacklist Web Service
+Requires=network.target
+
+[Service]
+Type=simple
+Restart=on-failure
+RemainAfterExit=yes
+ExecStart=/usr/bin/blacklist server --config_prod --log_dir /var/log
+
+[Install]
+WantedBy=multi-user.target

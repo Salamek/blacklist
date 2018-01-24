@@ -8,6 +8,7 @@ flask_migrate
 raven
 tabula-py
 PyPDF2
+psycopg2
 pil
 requests
 lxml

@@ -1,0 +1,32 @@
+#!/bin/sh
+set -e
+
+case "$1" in
+  abort-upgrade|abort-remove|abort-deconfigure)
+    ;;
+
+  configure)
+    if [ -z "$2" ]; then
+        systemctl daemon-reload
+        systemctl start blacklist
+        systemctl start blacklist_celeryworker
+        systemctl start blacklist_celerybeat
+        systemctl enable blacklist_celeryworker
+        systemctl enable blacklist_celerybeat
+        systemctl enable blacklist
+    else
+        blacklsit migrations upgrade
+        systemctl daemon-reload
+        systemctl restart blacklist
+        systemctl restart blacklist_celeryworker
+        systemctl restart blacklist_celerybeat
+    fi
+    ;;
+
+  *)
+    echo "postinst called with unknown argument \`$1'" >&2
+    exit 1
+    ;;
+esac
+
+exit 0
