@@ -9,6 +9,6 @@ raven
 tabula-py
 PyPDF2
 psycopg2
-pil
+Pillow
 requests
 lxml
