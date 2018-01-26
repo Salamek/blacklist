@@ -28,6 +28,7 @@ depends=(
     'python-flask-celery-helper'
     'python-flask-redis-helper'
     'python-flask-caching'
+    'python-pypdf2'
 )
 
 prepare() {
