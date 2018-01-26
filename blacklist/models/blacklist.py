@@ -99,7 +99,7 @@ class Role(BaseTable):
         secondary=user_role_association_table,
         back_populates="roles")
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return self.name
 
 

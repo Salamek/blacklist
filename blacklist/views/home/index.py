@@ -11,6 +11,6 @@ PER_PAGE = 30
 
 @home_index.route('/', methods=['GET'], defaults={'page': 1})
 @home_index.route('/page/<int:page>', methods=['GET'])
-def get_home(page):
+def get_home(page: int):
     pagination = Blacklist.query.filter().order_by(Blacklist.id.desc()).paginate(page, PER_PAGE)
     return flask.render_template('home.index.home.html', pagination=pagination)

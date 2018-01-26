@@ -15,7 +15,7 @@ class InForm(Form):
         Form.__init__(self, *args, **kwargs)
         self.user = None
 
-    def validate(self):
+    def validate(self) -> bool:
         rv = Form.validate(self)
         if not rv:
             return False

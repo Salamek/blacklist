@@ -78,6 +78,7 @@ from celery.bin.celery import main as celery_main
 from blacklist.extensions import db
 from blacklist.application import create_app, get_config
 from blacklist.models.blacklist import User, Role
+from blacklist.config import Config
 
 OPTIONS = docopt(__doc__)
 
@@ -139,7 +140,7 @@ def log_messages(app):
     log.info('STATIC_FOLDER: {}'.format(app.static_folder))
 
 
-def parse_options():
+def parse_options() -> Config:
     """Parses command line options for Flask.
 
     Returns:
@@ -197,7 +198,7 @@ def command(func):
 
 
 @command
-def server():
+def server() -> None:
     options = parse_options()
     setup_logging('server', logging.DEBUG if options.DEBUG else logging.WARNING)
     app = create_app(options)
@@ -206,7 +207,7 @@ def server():
 
 
 @command
-def shell():
+def shell() -> None:
     setup_logging('shell')
     app = create_app(parse_options())
     app.app_context().push()
@@ -214,7 +215,7 @@ def shell():
 
 
 @command
-def create_all():
+def create_all() -> None:
     setup_logging('create_all')
     app = create_app(parse_options())
     log = logging.getLogger(__name__)
@@ -228,7 +229,7 @@ def create_all():
 
 
 @command
-def list_routes():
+def list_routes() -> None:
     output = []
     app = create_app(parse_options())
     app.config['SERVER_NAME'] = 'example.com'
@@ -255,7 +256,7 @@ def list_routes():
 
 
 @command
-def post_install():
+def post_install() -> None:
     if not os.geteuid() == 0:
         sys.exit('Script must be run as root')
 
@@ -317,8 +318,9 @@ def post_install():
     with open(config_path, 'w') as f:
         yaml.dump(configuration, f, default_flow_style=False, allow_unicode=True)
 
+
 @command
-def fixtures():
+def fixtures() -> None:
     options = parse_options()
     app = create_app(options)
     with app.app_context():
@@ -381,14 +383,14 @@ def celeryworker():
 
 
 @command
-def migrations():
+def migrations() -> None:
     app = create_app(parse_options())
     manager = Manager(app)
     manager.add_command('migrations', MigrateCommand)
     manager.run()
 
 
-def main():
+def main() -> None:
     signal.signal(signal.SIGINT, lambda *_: sys.exit(0))  # Properly handle Control+C
     getattr(command, 'chosen')()  # Execute the function specified by the user.
 

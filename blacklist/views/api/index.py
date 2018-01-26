@@ -22,7 +22,7 @@ def get_doc():
 
 
 @api_index.route('/image/<int:blacklist_id>', methods=['GET'])
-def get_image(blacklist_id):
+def get_image(blacklist_id: int):
     working_images = 2
 
     item = Blacklist.query.filter(Blacklist.id == blacklist_id).first_or_404()
@@ -65,7 +65,7 @@ def get_image(blacklist_id):
 
 
 @api_index.route('/blocks/<int:blacklist_id>', methods=['POST'])
-def log_blocks(blacklist_id):
+def log_blocks(blacklist_id: int):
 
     if 'tests' not in request.json or 'success' not in request.json:
         return jsonify({'error': 'Wrong arguments'}), 400
@@ -80,7 +80,7 @@ def log_blocks(blacklist_id):
 
 @api_index.route('/blacklist', methods=['GET'], defaults={'page': 1})
 @api_index.route('/blacklist/page/<int:page>', methods=['GET'])
-def get_blacklist(page):
+def get_blacklist(page: int):
     data = Blacklist.query.filter().order_by(Blacklist.created.desc())
 
     log_api.delay(request.remote_addr)

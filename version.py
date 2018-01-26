@@ -17,16 +17,16 @@ class VersionModifier(object):
         with open(self.version_file_path, 'r') as init_f:
             self.version_file = init_f.read()
 
-    def get_current_version(self):
+    def get_current_version(self) -> StrictVersion:
         version = re.compile(r'VERSION\s*=\s*\((.*?)\)')
         return StrictVersion('.'.join(version.match(self.version_file).group(1).split(',')).replace(' ', ''))
 
-    def set_current_version(self, version):
+    def set_current_version(self, version: str) -> None:
         file_content = re.sub(r'VERSION\s*=\s*\((.*?)\)', r'VERSION = ({})'.format(', '.join(str(x) for x in version)), self.version_file)
         with open(self.version_file_path, 'w') as init_f:
             init_f.write(file_content)
 
-    def tag(self, version_string):
+    def tag(self, version_string: str) -> None:
         subprocess.call(['git', 'add', 'blacklist/__init__.py'])
         subprocess.call(['git', 'add', 'archlinux/PKGBUILD'])
         subprocess.call(['git', 'commit', '-m', "New version {}".format(version_string)])
@@ -34,7 +34,7 @@ class VersionModifier(object):
         subprocess.call(['git', 'push'])
         subprocess.call(['git', 'push', '--tags'])
 
-    def set_version(self, version_string):
+    def set_version(self, version_string: str) -> None:
         current_version = self.get_current_version()
         version = StrictVersion(version_string)
         if version < current_version:

@@ -1,5 +1,5 @@
 
-def format_bytes(num, suffix='B'):
+def format_bytes(num: int, suffix: str='B') -> str:
     """
     Format bytes to human readable string
     @param num:
@@ -13,7 +13,7 @@ def format_bytes(num, suffix='B'):
     return "%.1f%s%s" % (num, 'Yi', suffix)
 
 
-def fix_url(url):
+def fix_url(url: str) -> str:
     """
     Fixes url
     :param url: 
@@ -24,7 +24,7 @@ def fix_url(url):
     return url
 
 
-def format_boolean(bool_to_format):
+def format_boolean(bool_to_format: bool) -> str:
     """
     Formats boolean
     :param bool_to_format: 

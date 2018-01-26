@@ -22,7 +22,7 @@ class NewForm(Form):
             choices.append((role.id, role.name))
         self.roles.choices = choices
 
-    def validate(self):
+    def validate(self) -> bool:
         rv = Form.validate(self)
         if not rv:
             return False
@@ -55,7 +55,7 @@ class EditForm(Form):
             choices.append((role.id, role.name))
         self.roles.choices = choices
 
-    def validate(self):
+    def validate(self) -> bool:
         rv = Form.validate(self)
         if not rv:
             return False

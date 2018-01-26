@@ -20,7 +20,7 @@ PER_PAGE = 20
 @blacklist_index.route('/page/<int:page>', methods=['GET'])
 @login_required
 @Acl.validate_path([Role.ADMIN], current_user)
-def get_blacklist(page):
+def get_blacklist(page: int):
     pagination = Blacklist.query.filter().order_by(Blacklist.created.desc()).paginate(page, PER_PAGE)
     return flask.render_template('blacklist.index.blacklist.html', pagination=pagination)
 
@@ -54,7 +54,7 @@ def new_blacklist():
 @blacklist_index.route('/edit/<int:blacklist_id>', methods=['GET', 'POST'])
 @Acl.validate_path([Role.ADMIN], current_user)
 @login_required
-def edit_blacklist(blacklist_id):
+def edit_blacklist(blacklist_id: int):
     blacklist_detail = Blacklist.query.filter_by(id=blacklist_id).first_or_404()
 
     form = EditForm(
@@ -94,7 +94,7 @@ def edit_blacklist(blacklist_id):
 @blacklist_index.route('/delete/<int:blacklist_id>', methods=['GET'])
 @login_required
 @Acl.validate_path([Role.ADMIN], current_user)
-def delete_blacklist(blacklist_id):
+def delete_blacklist(blacklist_id: int):
     blacklist_detail = Blacklist.query.filter_by(id=blacklist_id).first_or_404()
     db.session.delete(blacklist_detail)
     db.session.commit()

@@ -1,8 +1,8 @@
 from functools import wraps
 
 from flask import jsonify
-
-from blacklist.models.blacklist import Role
+from typing import List
+from blacklist.models.blacklist import Role, User
 
 """
     if current_user.role not in [Role.ADMIN]:
@@ -14,14 +14,14 @@ from blacklist.models.blacklist import Role
 class Acl(object):
 
     @staticmethod
-    def roles_to_list(roles):
+    def roles_to_list(roles: List[Role]) -> List[int]:
         ret = []
         for role in roles:
             ret.append(role.id)
         return ret
 
     @staticmethod
-    def get_user_roles(user):
+    def get_user_roles(user: User) -> List[int]:
         roles = Acl.roles_to_list(user.roles)
         if not user.is_authenticated():
             roles.append(Role.GUEST)
@@ -29,7 +29,7 @@ class Acl(object):
         return roles
 
     @staticmethod
-    def validate_path(allowed, user):
+    def validate_path(allowed: List[int], user: User):
         def decorator(f):
             @wraps(f)
             def decorated_function(*args, **kwargs):
@@ -45,5 +45,5 @@ class Acl(object):
         return decorator
 
     @staticmethod
-    def validate(allowed, user):
+    def validate(allowed: List[int], user: User) -> bool:
         return not set(Acl.roles_to_list(user.roles)).isdisjoint(allowed)

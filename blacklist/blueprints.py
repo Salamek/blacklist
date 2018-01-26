@@ -9,7 +9,7 @@ URL paths are defined here as well.
 from flask import Blueprint
 
 
-def _factory(partial_module_string, url_prefix=None):
+def _factory(partial_module_string: str, url_prefix: str=None) -> Blueprint:
     """Generates blueprint objects for view modules.
 
     Positional arguments:

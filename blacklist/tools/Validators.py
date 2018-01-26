@@ -8,7 +8,7 @@ class ParamCheckException(Exception):
 class Validators(object):
 
     @staticmethod
-    def is_valid_hostname(hostname):
+    def is_valid_hostname(hostname: str) -> bool:
         if len(hostname) > 255:
             return False
         if hostname[-1] == ".":

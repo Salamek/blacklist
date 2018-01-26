@@ -25,7 +25,7 @@ LOG = getLogger(__name__)
 
 # Fix Flask-SQLAlchemy and Celery incompatibilities.
 @worker_process_init.connect
-def celery_worker_init_db(**_):
+def celery_worker_init_db(**_) -> None:
     """Initialize SQLAlchemy right after the Celery worker process forks.
     This ensures each Celery worker has its own dedicated connection to the MySQL database. Otherwise
     one worker may close the connection while another worker is using it, raising exceptions.
@@ -93,33 +93,33 @@ def before_request():
 
 
 @current_app.template_filter('format_bytes')
-def format_bytes_filter(num):
+def format_bytes_filter(num: int) -> str:
     return format_bytes(num)
 
 
 @current_app.template_filter('format_datetime')
-def format_datetime_filter(date_time):
+def format_datetime_filter(date_time) -> str:
     return format_datetime(date_time)
 
 
 @current_app.template_filter('format_date')
-def format_date_filter(date_time):
+def format_date_filter(date_time) -> str:
     return format_date(date_time)
 
 
 @current_app.template_filter('fix_url')
-def fix_url_filter(url):
+def fix_url_filter(url: str) -> str:
     return fix_url(url)
 
 
 @current_app.template_filter('format_boolean')
-def format_boolean_filter(bool_to_format):
-    return format_boolean(bool_to_format)
+def format_boolean_filter(bool_to_format: bool) -> Markup:
+    return Markup(format_boolean(bool_to_format))
 
 
 # Template filters.
 @current_app.template_filter()
-def whitelist(value):
+def whitelist(value: str) -> Markup:
     """Whitelist specific HTML tags and strings.
     Positional arguments:
     value -- the string to perform the operation on.

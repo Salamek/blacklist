@@ -26,7 +26,7 @@ MIGRATE_ROOT_FOLDER = os.path.abspath(os.path.join(APP_ROOT_FOLDER, 'migrations'
 
 
 @listens_for(Pool, 'connect', named=True)
-def _on_connect(dbapi_connection, **_):
+def _on_connect(dbapi_connection, **_) -> None:
     """Set MySQL mode to TRADITIONAL on databases that don't set this automatically.
 
     Without this, MySQL will silently insert invalid values in the database, causing very long debugging sessions in the

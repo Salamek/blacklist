@@ -19,7 +19,7 @@ PER_PAGE = 20
 @user_index.route('/page/<int:page>', methods=['GET'])
 @login_required
 @Acl.validate_path([Role.ADMIN], current_user)
-def get_user(page):
+def get_user(page: int):
     pagination = User.query.filter().order_by(User.created.desc()).paginate(page, PER_PAGE)
     return flask.render_template('user.index.user.html', pagination=pagination)
 
@@ -45,7 +45,7 @@ def new_user():
 @user_index.route('/edit/<int:user_id>', methods=['GET', 'POST'])
 @Acl.validate_path([Role.ADMIN], current_user)
 @login_required
-def edit_user(user_id):
+def edit_user(user_id: int):
     user_detail = User.query.filter_by(id=user_id).first_or_404()
 
     roles = []
@@ -71,7 +71,7 @@ def edit_user(user_id):
 @user_index.route('/delete/<int:user_id>', methods=['GET'])
 @login_required
 @Acl.validate_path([Role.ADMIN], current_user)
-def delete_user(user_id):
+def delete_user(user_id: int):
     user_detail = User.query.filter_by(id=user_id).first_or_404()
     db.session.delete(user_detail)
     db.session.commit()

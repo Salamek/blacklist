@@ -19,7 +19,7 @@ class NewForm(Form):
     def __init__(self, *args, **kwargs):
         Form.__init__(self, *args, **kwargs)
 
-    def validate(self):
+    def validate(self) -> bool:
         rv = Form.validate(self)
         if not rv:
             return False
@@ -45,7 +45,7 @@ class EditForm(Form):
     def __init__(self, *args, **kwargs):
         Form.__init__(self, *args, **kwargs)
 
-    def validate(self):
+    def validate(self) -> bool:
         rv = Form.validate(self)
         if not rv:
             return False

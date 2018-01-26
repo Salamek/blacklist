@@ -8,6 +8,7 @@ import flask.json
 from flask import Flask, url_for, request
 from flask_babel import gettext
 from blacklist.blueprints import all_blueprints
+from blacklist.config import Config
 from yaml import load
 
 import blacklist as app_root
@@ -19,7 +20,7 @@ STATIC_FOLDER = os.path.join(APP_ROOT_FOLDER, 'static')
 REDIS_SCRIPTS_FOLDER = os.path.join(APP_ROOT_FOLDER, 'redis_scripts')
 
 
-def get_config(config_class_string: str, yaml_files=None):
+def get_config(config_class_string: str, yaml_files: list=None) -> Config:
     """Load the Flask config from a class.
     Positional arguments:
     config_class_string -- string representation of a configuration class that will be loaded (e.g.
@@ -63,7 +64,7 @@ def get_config(config_class_string: str, yaml_files=None):
     return config_obj
 
 
-def create_app(config_obj, no_sql: bool=False):
+def create_app(config_obj: Config, no_sql: bool=False) -> Flask:
 
     """Create an application."""
     app = Flask(__name__, template_folder=TEMPLATE_FOLDER, static_folder=STATIC_FOLDER)

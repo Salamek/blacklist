@@ -25,7 +25,7 @@ LOG = getLogger(__name__)
 
 
 @celery.task(bind=True)
-def log_block(task_id, blacklist_id, remote_addr, tests, success):
+def log_block(task_id: str, blacklist_id: int, remote_addr: str, tests: int, success: int) -> None:
     blocking_log = BlockingLog()
     blocking_log.blacklist_id = blacklist_id
     blocking_log.remote_addr = remote_addr
@@ -36,7 +36,7 @@ def log_block(task_id, blacklist_id, remote_addr, tests, success):
 
 
 @celery.task(bind=True)
-def log_api(task_id, remote_addr):
+def log_api(task_id: str, remote_addr: str) -> None:
     found = ApiLog.query.filter_by(remote_addr=remote_addr).first()
     if not found:
         found = ApiLog()
@@ -51,7 +51,7 @@ def log_api(task_id, remote_addr):
 
 @celery.task(bind=True)
 @single_instance
-def crawl_blacklist(task_id=None):
+def crawl_blacklist(task_id: str=None) -> None:
     date_format = "%d.%m.%Y"
 
     # Find next PDF version
@@ -164,7 +164,7 @@ def crawl_blacklist(task_id=None):
 
 
 @celery.task(bind=True)
-def crawl_dns_info(task_id=None, only_new=False):
+def crawl_dns_info(task_id: str=None, only_new: bool=False) -> None:
     from_date = datetime.datetime.today() - datetime.timedelta(days=7)
 
     if only_new:
