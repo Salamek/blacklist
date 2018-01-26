@@ -3,6 +3,7 @@ Description=Blacklist Web Service Celery beat
 Requires=network.target
 
 [Service]
+User=blacklist
 Type=simple
 Restart=on-failure
 RemainAfterExit=yes

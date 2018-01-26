@@ -22,6 +22,7 @@ Command details:
     celerydev           Starts a Celery worker with Celery Beat in the same
                         process.
     fixtures            Generate fixtures
+    configure           Configure application
 
 Usage:
     blacklist server [-p NUM] [-l DIR] [--config_prod]
@@ -35,6 +36,7 @@ Usage:
     blacklist celerybeat [-s FILE] [--pid=FILE] [-l DIR] [--config_prod]
     blacklist celeryworker [-n NUM] [-l DIR] [--config_prod]
     blacklist fixtures [--config_prod]
+    blacklist configure [--config_prod]
     blacklist (-h | --help)
 
 Options:
@@ -79,6 +81,7 @@ from blacklist.extensions import db
 from blacklist.application import create_app, get_config
 from blacklist.models.blacklist import User, Role
 from blacklist.config import Config
+from blacklist.tools.helpers import random_password
 
 OPTIONS = docopt(__doc__)
 
@@ -263,12 +266,6 @@ def post_install() -> None:
     app = create_app(parse_options())
     config_path = os.path.join('/', 'etc', 'blacklist', 'config.yml')
 
-    def run_psql_command(sql):
-        subprocess.call(['su', '-c', 'psql -c "{}"'.format(sql), 'postgres'])
-
-    def get_random_password():
-        return hashlib.md5(str(random.randint(0, sys.maxsize)).encode('UTF-8')).hexdigest()
-
     configuration = {}
     if os.path.isfile(config_path):
         with open(config_path) as f:
@@ -278,20 +275,8 @@ def post_install() -> None:
 
     # Generate database and config if nothing is specified
     if 'SQLALCHEMY_DATABASE_URI' not in configuration or not configuration['SQLALCHEMY_DATABASE_URI']:
-        # Create Database
-        database_username = 'blacklist'
-        database_name = 'blacklist'
-        database_password = get_random_password()
 
-        run_psql_command('CREATE USER {} WITH PASSWORD \'{}\';'.format(database_username, database_password))
-        run_psql_command('CREATE DATABASE {};'.format(database_name))
-        run_psql_command('GRANT ALL PRIVILEGES ON DATABASE {} TO {};'.format(database_name, database_username))
-
-        configuration['SQLALCHEMY_DATABASE_URI'] = 'postgresql://{}:{}@localhost/{}'.format(
-            database_username,
-            database_password,
-            database_name
-        )
+        configuration['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////home/blacklist/blacklist.db'
 
         # We need to set DB config to make stamp work
         app.config['SQLALCHEMY_DATABASE_URI'] = configuration['SQLALCHEMY_DATABASE_URI']
@@ -303,9 +288,11 @@ def post_install() -> None:
         with app.app_context():
             stamp()
 
+        fixtures(app)
+
         # Generate secret key
     if 'SECRET_KEY' not in configuration or not configuration['SECRET_KEY']:
-        app.config['SECRET_KEY'] = configuration['SECRET_KEY'] = get_random_password()
+        app.config['SECRET_KEY'] = configuration['SECRET_KEY'] = random_password()
 
     # Set port and host
     if 'HOST' not in configuration or not configuration['HOST']:
@@ -320,9 +307,112 @@ def post_install() -> None:
 
 
 @command
-def fixtures() -> None:
-    options = parse_options()
-    app = create_app(options)
+def configure() -> None:
+    if not os.geteuid() == 0:
+        sys.exit('Script must be run as root')
+
+    app = create_app(parse_options())
+    config_path = os.path.join('/', 'etc', 'blacklist', 'config.yml')
+
+    configuration = {}
+    if os.path.isfile(config_path):
+        with open(config_path) as f:
+            loaded_data = yaml.load(f)
+            if isinstance(loaded_data, dict):
+                configuration.update(loaded_data)
+
+    def required_input(text):
+        return input(text) or required_input(text)
+
+    def database_sqlite():
+        print('SQLite configuration:')
+        database_location = input('Location [/home/blacklist/blacklist.db]: ') or '/home/blacklist/blacklist.db'
+
+        app.config['SQLALCHEMY_DATABASE_URI'] = configuration['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}'.format(database_location)
+
+    def database_mysql():
+        print('MySQL configuration:')
+        database_login('mysql')
+
+    def database_postgresql():
+        print('PostgreSQL configuration:')
+        database_login('postgresql')
+
+    def database_login(database_type):
+        database_server = input('Server [127.0.0.1]: ') or '127.0.0.1'
+        database_name = input('Database [blacklist]: ') or 'blacklist'
+        database_user = input('User [blacklist]: ') or 'blacklist'
+        database_password = required_input('Password (required):')
+
+        app.config['SQLALCHEMY_DATABASE_URI'] = configuration['SQLALCHEMY_DATABASE_URI'] = '{}://{}:{}@{}/{}'.format(
+            database_type,
+            database_user,
+            database_password,
+            database_server,
+            database_name
+        )
+
+    def ignore():
+        pass
+
+    database_types = {
+        0: {'name': 'Ignore', 'default': True, 'call': ignore},
+        1: {'name': 'SQLite', 'default': False, 'call': database_sqlite},
+        2: {'name': 'PostgreSQL', 'default': False, 'call': database_postgresql},
+        3: {'name': 'MySQL', 'default': False, 'call': database_mysql},
+    }
+
+    print('Choose database type you want to use:')
+    db_type_default = None
+    for db_type in database_types:
+        if database_types[db_type]['default']:
+            db_type_default = db_type
+        print('{}) {}{}'.format(
+            db_type,
+            database_types[db_type]['name'],
+            ' (default)' if database_types[db_type]['default'] else '')
+        )
+
+    database_type = int(input('Database type [{}]: '.format(db_type_default)) or db_type_default)
+    if database_type not in database_types:
+        print('Invalid option selected')
+        sys.exit(1)
+
+    database_types[database_type]['call']()
+
+    print('Webserver configuration:')
+    configuration['HOST'] = input('Host [127.0.0.1]: ') or '127.0.0.1'
+    configuration['PORT'] = input('Port [80]: ') or '80'
+
+    # Write new configuration
+    with open(config_path, 'w') as f:
+        yaml.dump(configuration, f, default_flow_style=False, allow_unicode=True)
+
+    print('Configuration saved.')
+
+    recreate_database = input('Recreate database ? (y/n) [n]: ') or 'n'
+    if recreate_database == 'y':
+        # Create empty database
+        with app.app_context():
+            db.create_all()
+
+        with app.app_context():
+            stamp()
+
+        fixtures(app)
+
+    restart_services = input('Restart services to load new configuration ? (y/n) [n]: ') or 'n'
+    if restart_services == 'y':
+        subprocess.call(['systemctl', 'restart', 'blacklist_celeryworker'])
+        subprocess.call(['systemctl', 'restart', 'blacklist_celerybeat'])
+        subprocess.call(['systemctl', 'restart', 'blacklist'])
+
+
+@command
+def fixtures(app=None) -> None:
+    if not app:
+        options = parse_options()
+        app = create_app(options)
     with app.app_context():
         roles = {
             Role.GUEST: 'Guest',

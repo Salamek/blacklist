@@ -3,6 +3,7 @@ Description=Blacklist Service Celery worker
 Requires=network.target
 
 [Service]
+User=blacklist
 Type=simple
 Restart=on-failure
 RemainAfterExit=yes

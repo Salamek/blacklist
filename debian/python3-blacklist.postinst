@@ -7,7 +7,9 @@ case "$1" in
 
   configure)
     if [ -z "$2" ]; then
+        useradd -m blacklist
         systemctl daemon-reload
+        blacklist post_install --config_prod
         systemctl start blacklist
         systemctl start blacklist_celeryworker
         systemctl start blacklist_celerybeat

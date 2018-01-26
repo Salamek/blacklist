@@ -5,7 +5,7 @@ pre_install() {
 
 ## arg 1:  the new package version
 post_install() {
-        # Generate default config
+        useradd -m blacklist
         systemctl enable redis
         systemctl restart redis
         blacklist post_install --config_prod
@@ -32,7 +32,6 @@ post_upgrade() {
         systemctl restart blacklist
         systemctl restart blacklist_celeryworker
         systemctl restart blacklist_celerybeat
-        blacklist check --config_prod
 }
 
 ## arg 1:  the old package version
