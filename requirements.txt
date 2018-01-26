@@ -11,4 +11,5 @@ PyPDF2
 psycopg2
 Pillow
 requests
+docopt
 lxml
