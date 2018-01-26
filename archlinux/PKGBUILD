@@ -29,6 +29,9 @@ depends=(
     'python-flask-redis-helper'
     'python-flask-caching'
     'python-pypdf2'
+    'xorg-server-xvfb'
+    'wkhtmltopdf'
+    'jre8-openjdk'
 )
 
 prepare() {

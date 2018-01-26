@@ -35,8 +35,6 @@ classes = """
     Development Status :: 4 - Beta
     Intended Audience :: Developers
     Programming Language :: Python
-    Programming Language :: Python :: 2
-    Programming Language :: Python :: 2.7
     Programming Language :: Python :: 3
     Programming Language :: Python :: 3.3
     Programming Language :: Python :: 3.4
@@ -65,39 +63,16 @@ extra_files = [
 extra_files.extend(package_files('blacklist/translations'))
 
 extra_files.extend(package_files('blacklist/static/img'))
-extra_files.extend(package_files('blacklist/static/layout-editor'))
-extra_files.extend(package_files('blacklist/static/shape-library'))
 
 # Bower components
 extra_files.extend(package_files('blacklist/static/bower_components/bootstrap/dist'))
-
-extra_files.extend(package_files('blacklist/static/bower_components/bootstrap-colorpicker/dist'))
 
 extra_files.extend(package_files('blacklist/static/bower_components/font-awesome/css'))
 extra_files.extend(package_files('blacklist/static/bower_components/font-awesome/fonts'))
 
 extra_files.extend(package_files('blacklist/static/bower_components/jquery/dist'))
 
-extra_files.extend(package_files('blacklist/static/bower_components/jquery-ui'))
-extra_files.extend(package_files('blacklist/static/bower_components/jquery-ui/themes/dark-hive'))
-
-extra_files.extend(package_files('blacklist/static/bower_components/jstree/dist'))
-
-extra_files.extend(package_files('blacklist/static/bower_components/keyboard/dist'))
-
-extra_files.extend(package_files('blacklist/static/bower_components/socket.io-client/dist'))
-
-extra_files.extend(package_files('blacklist/static/bower_components/svg-pan-zoom/dist'))
-
-extra_files.extend(package_files('blacklist/static/bower_components/svg.draggable.js/dist'))
-extra_files.extend(package_files('blacklist/static/bower_components/svg.draw.js/dist'))
-extra_files.extend(package_files('blacklist/static/bower_components/svg.js/dist'))
-extra_files.extend(package_files('blacklist/static/bower_components/svg.panzoom.js/src/'))
-extra_files.extend(package_files('blacklist/static/bower_components/svg.resize.js/dist'))
-extra_files.extend(package_files('blacklist/static/bower_components/svg.select.js/dist'))
-extra_files.extend(package_files('blacklist/static/bower_components/vis/dist'))
-extra_files.extend(package_files('blacklist/static/bower_components/boostrap-menu/dist'))
-extra_files.extend(package_files('blacklist/static/bower_components/select2/dist/'))
+extra_files.extend(package_files('blacklist/static/bower_components/ekko-lightbox/dist'))
 
 setup(
     name='blacklist',
