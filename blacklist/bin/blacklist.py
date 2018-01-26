@@ -57,18 +57,14 @@ Options:
 
 from __future__ import print_function
 
-import hashlib
 import logging
-import eventlet
 import logging.handlers
 import os
-import random
 import signal
 import subprocess
 import sys
 import urllib.parse
 from functools import wraps
-
 import flask
 import yaml
 
@@ -487,4 +483,3 @@ def main() -> None:
 
 if __name__ == '__main__':
     main()
-

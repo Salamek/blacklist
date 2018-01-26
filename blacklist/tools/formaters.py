@@ -16,8 +16,8 @@ def format_bytes(num: int, suffix: str='B') -> str:
 def fix_url(url: str) -> str:
     """
     Fixes url
-    :param url: 
-    :return: 
+    :param url:
+    :return:
     """
     if not url.startswith('http'):
         url = 'http://{}'.format(url)
@@ -27,8 +27,10 @@ def fix_url(url: str) -> str:
 def format_boolean(bool_to_format: bool) -> str:
     """
     Formats boolean
-    :param bool_to_format: 
-    :return: 
+    :param bool_to_format:
+    :return:
     """
-    return '<div class="label label-success">Yes</div>' if bool_to_format else '<div class="label label-danger">No</div>'
-
+    if bool_to_format:
+        return '<div class="label label-success">Yes</div>'
+    else:
+        return '<div class="label label-danger">No</div>'

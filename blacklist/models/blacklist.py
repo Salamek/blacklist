@@ -1,4 +1,3 @@
-from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 import sys
@@ -15,12 +14,17 @@ class BaseTable(db.Model):
     updated = db.Column(db.DateTime, default=func.now(), onupdate=func.current_timestamp())
     created = db.Column(db.DateTime, default=func.now())
 
-user_role_association_table = db.Table('user_role_association', BaseTable.metadata,
+
+user_role_association_table = db.Table(
+    'user_role_association',
+    BaseTable.metadata,
     db.Column('user_id', db.Integer, db.ForeignKey('user.id')),
     db.Column('role_id', db.Integer, db.ForeignKey('role.id'))
 )
 
-blacklist_pdf_association_table = db.Table('blacklist_pdf_association', BaseTable.metadata,
+blacklist_pdf_association_table = db.Table(
+    'blacklist_pdf_association',
+    BaseTable.metadata,
     db.Column('blacklist_id', db.Integer, db.ForeignKey('blacklist.id')),
     db.Column('pdf_id', db.Integer, db.ForeignKey('pdf.id'))
 )
@@ -45,11 +49,9 @@ class User(BaseTable):
     def is_active(self):
         return True
 
-    #@property
     def is_authenticated(self):
         return True
 
-    #@property
     def is_anonymous(self):
         return False
 

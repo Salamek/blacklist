@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-import re
 import requests
 from lxml import etree as ElTr
 from flask import jsonify, request, url_for, render_template

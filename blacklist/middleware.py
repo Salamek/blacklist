@@ -8,9 +8,9 @@ To be imported by the application.current_app() factory.
 import os
 from logging import getLogger
 
-from celery.signals import task_failure, worker_process_init
-from flask import current_app, render_template, request, session, g
-from flask_babel import gettext, format_datetime, format_date
+from celery.signals import worker_process_init
+from flask import current_app, render_template, request, g
+from flask_babel import format_datetime, format_date
 from flask_login import current_user
 from blacklist.extensions import navigation, login_manager, babel, db
 from blacklist.models.blacklist import Pdf, Role

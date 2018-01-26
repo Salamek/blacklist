@@ -36,7 +36,7 @@ def _on_connect(dbapi_connection, **_) -> None:
     pass
     # !FIXME set this only when MYSQL database is used
     # LOG.debug('FIXME! Setting SQL Mode to TRADITIONAL.')
-    #dbapi_connection.cursor().execute("SET SESSION sql_mode='TRADITIONAL'")
+    # dbapi_connection.cursor().execute("SET SESSION sql_mode='TRADITIONAL'")
 
 
 db = SQLAlchemy()

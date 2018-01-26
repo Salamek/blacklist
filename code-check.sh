@@ -1,0 +1,1 @@
+flake8 blacklist tests --max-line-length=160 --builtins=_

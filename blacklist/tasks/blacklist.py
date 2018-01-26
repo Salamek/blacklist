@@ -171,7 +171,11 @@ def crawl_dns_info(task_id: str=None, only_new: bool=False) -> None:
     if only_new:
         blacklist_details = Blacklist.query.filter_by(last_crawl=None)
     else:
-        blacklist_details = Blacklist.query.filter(or_(Blacklist.last_crawl < from_date, Blacklist.last_crawl == None, Blacklist.thumbnail == False))
+        blacklist_details = Blacklist.query.filter(or_(
+            Blacklist.last_crawl < from_date,
+            Blacklist.last_crawl == None,  # noqa: E711
+            Blacklist.thumbnail == False
+        ))
 
     for blacklist_detail in blacklist_details:
         try:
@@ -197,4 +201,3 @@ def crawl_dns_info(task_id: str=None, only_new: bool=False) -> None:
         blacklist_detail.last_crawl = datetime.datetime.now()
         db.session.add(blacklist_detail)
     db.session.commit()
-
