@@ -1,6 +1,9 @@
 flask-login
 Flask-Navigation
 Flask-Babel
+Flask-Celery-Helper
+Flask-Redis-Helper
+Flask-Caching
 celery
 redis
 WTForms
@@ -12,4 +15,6 @@ psycopg2
 Pillow
 requests
 docopt
+pyyaml
+celery
 lxml
