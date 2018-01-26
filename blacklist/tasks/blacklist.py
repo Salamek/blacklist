@@ -6,20 +6,19 @@ import datetime
 import tabula
 import csv
 import PyPDF2
+import requests
+from flask_celery import single_instance
+from sqlalchemy import or_
+from logging import getLogger
+from blacklist.extensions import celery, db
+from blacklist.models.blacklist import BlockingLog, ApiLog, Pdf, Blacklist
+from blacklist.tools.Validators import Validators
+from blacklist.application import STATIC_FOLDER
 
 try:
     from PIL import Image
 except ImportError:
     import Image
-
-from flask_celery import single_instance
-from sqlalchemy import or_
-from logging import getLogger
-from blacklist.extensions import celery, redis, db
-from blacklist.models.blacklist import BlockingLog, ApiLog, Pdf, Blacklist
-from blacklist.tools.Validators import Validators
-from blacklist.application import STATIC_FOLDER
-from urllib.request import urlopen, HTTPError
 
 LOG = getLogger(__name__)
 
@@ -68,9 +67,11 @@ def crawl_blacklist(task_id: str=None) -> None:
     for check_version in range(last_version, last_version + flask.current_app.config['BLACKLIST_VERSION_TRY_MAX']):
         try:
             LOG.info('Trying version {}'.format(check_version))
-            urlopen(flask.current_app.config['BLACKLIST_SOURCE'].format(version=check_version))
+            test_url = flask.current_app.config['BLACKLIST_SOURCE'].format(version=check_version)
+            r = requests.head(test_url, timeout=60)
+            r.raise_for_status()
             max_version_found = max(check_version, max_version_found) if max_version_found else check_version
-        except HTTPError:
+        except requests.HTTPError:
             # If ve found max version and get error after it, it means that we are overshooting, no need to continue
             if max_version_found:
                 LOG.info(
@@ -86,8 +87,8 @@ def crawl_blacklist(task_id: str=None) -> None:
 
     latest_version_url = flask.current_app.config['BLACKLIST_SOURCE'].format(version=max_version_found)
     LOG.info('Found PDF {}'.format(latest_version_url))
-    response = urlopen(latest_version_url)
-    pdf_content = response.read()
+    response = requests.get(latest_version_url)
+    pdf_content = response.content
 
     pdf_sum = hashlib.sha256(pdf_content).hexdigest()
 
@@ -111,9 +112,9 @@ def crawl_blacklist(task_id: str=None) -> None:
 
         pdf = Pdf()
         pdf.sum = pdf_sum
-        pdf.name = os.path.basename(response.geturl())
+        pdf.name = os.path.basename(response.url)
         pdf.signed = False  # !FIXME Check signature
-        pdf.ssl = response.geturl().startswith('https')  # We dont need better check,  urlopen checks SSL cert validity
+        pdf.ssl = response.url.startswith('https')  # We dont need better check,  urlopen checks SSL cert validity
         pdf.parsed = csv_parsed
         pdf.size = os.path.getsize(file_path)
         pdf.title = pdf_info.title if pdf_info.title else pdf_info.subject
