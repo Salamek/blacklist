@@ -109,10 +109,10 @@ repoupdate:
     - mkdir -p ~/.ssh
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
   script:
-    - scp archlinux/blacklist*.pkg.tar.xz www-data@salamek.cz:/var/www/arch-private.salamek.cz/www/any
-    - scp deb_dist/*.deb www-data@salamek.cz:/var/www/apt-private.salamek.cz/cache
-    - ssh www-data@salamek.cz '/var/www/arch-private.salamek.cz/update_repo.sh'
-    - ssh www-data@salamek.cz '/var/www/apt-private.salamek.cz/update_repo.sh'
+    - scp archlinux/blacklist*.pkg.tar.xz www-data@salamek.cz:/var/www/arch.salamek.cz/www/any
+    - scp deb_dist/*.deb www-data@salamek.cz:/var/www/apt.salamek.cz/cache
+    - ssh www-data@salamek.cz '/var/www/arch.salamek.cz/update_repo.sh'
+    - ssh www-data@salamek.cz '/var/www/apt.salamek.cz/update_repo.sh'
   dependencies:
     - package:archlinux
     - package:debian
