@@ -21,8 +21,7 @@ Command details:
     celeryworker        Run a Celery worker process.
     celerydev           Starts a Celery worker with Celery Beat in the same
                         process.
-    fixtures            Generate fixtures
-    configure           Configure application
+    setup               Setup application
 
 Usage:
     blacklist server [-p NUM] [-l DIR] [--config_prod]
@@ -35,8 +34,7 @@ Usage:
     blacklist celerydev [-l DIR] [--config_prod]
     blacklist celerybeat [-s FILE] [--pid=FILE] [-l DIR] [--config_prod]
     blacklist celeryworker [-n NUM] [-l DIR] [--config_prod]
-    blacklist fixtures [--config_prod]
-    blacklist configure [--config_prod]
+    blacklist setup [--config_prod]
     blacklist (-h | --help)
 
 Options:
@@ -284,8 +282,6 @@ def post_install() -> None:
         with app.app_context():
             stamp()
 
-        fixtures(app)
-
         # Generate secret key
     if 'SECRET_KEY' not in configuration or not configuration['SECRET_KEY']:
         app.config['SECRET_KEY'] = configuration['SECRET_KEY'] = random_password()
@@ -303,7 +299,7 @@ def post_install() -> None:
 
 
 @command
-def configure() -> None:
+def setup() -> None:
     if not os.geteuid() == 0:
         sys.exit('Script must be run as root')
 
@@ -322,7 +318,17 @@ def configure() -> None:
 
     def database_sqlite():
         print('SQLite configuration:')
-        database_location = input('Location [/home/blacklist/blacklist.db]: ') or '/home/blacklist/blacklist.db'
+
+        connection_info = urllib.parse.urlparse(
+            configuration.get('SQLALCHEMY_DATABASE_URI', 'sqlite:////home/blacklist/blacklist.db')
+        )
+
+        if connection_info.scheme == 'sqlite':
+            database_path = connection_info.path
+        else:
+            database_path = '/home/blacklist/blacklist.db'
+
+        database_location = input('Location [{}]: '.format(database_path)) or database_path
 
         app.config['SQLALCHEMY_DATABASE_URI'] = configuration['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///{}'.format(database_location)
 
@@ -335,10 +341,29 @@ def configure() -> None:
         database_login('postgresql')
 
     def database_login(database_type):
-        database_server = input('Server [127.0.0.1]: ') or '127.0.0.1'
-        database_name = input('Database [blacklist]: ') or 'blacklist'
-        database_user = input('User [blacklist]: ') or 'blacklist'
-        database_password = required_input('Password (required):')
+
+        connection_info = urllib.parse.urlparse(
+            configuration.get('SQLALCHEMY_DATABASE_URI', '{}://blacklist:password@127.0.0.1/blacklist'.format(database_type))
+        )
+
+        if connection_info.scheme == database_type:
+            database_name = connection_info.path
+            database_server = connection_info.netloc
+            database_user = connection_info.username
+            database_password = connection_info.password
+        else:
+            database_name = 'blacklist'
+            database_server = '127.0.0.1'
+            database_user = 'blacklist'
+            database_password = None
+
+        database_server = input('Server [{}]: '.format(database_server)) or database_server
+        database_name = input('Database [{}]: '.format(database_name)) or database_name
+        database_user = input('User [{}]: '.format(database_user)) or database_user
+        if not database_password:
+            database_password = required_input('Password (required):')
+        else:
+            database_password = input('Password [{}]: '.format('*' * len(database_password))) or database_password
 
         app.config['SQLALCHEMY_DATABASE_URI'] = configuration['SQLALCHEMY_DATABASE_URI'] = '{}://{}:{}@{}/{}'.format(
             database_type,
@@ -377,8 +402,10 @@ def configure() -> None:
     database_types[database_type]['call']()
 
     print('Webserver configuration:')
-    configuration['HOST'] = input('Host [127.0.0.1]: ') or '127.0.0.1'
-    configuration['PORT'] = input('Port [80]: ') or '80'
+    webserver_host = configuration.get('HOST', '127.0.0.1')
+    webserver_port = configuration.get('PORT', '80')
+    configuration['HOST'] = input('Host [{}]: '.format(webserver_host)) or webserver_host
+    configuration['PORT'] = input('Port [{}]: '.format(webserver_port)) or webserver_port
 
     # Write new configuration
     with open(config_path, 'w') as f:
@@ -390,52 +417,53 @@ def configure() -> None:
     if recreate_database == 'y':
         # Create empty database
         with app.app_context():
+
+            # Create tables
             db.create_all()
 
-        with app.app_context():
+            # Stamp database to lates migration
             stamp()
 
-        fixtures(app)
+            # Create roles
+            roles = {
+                Role.GUEST: 'Guest',
+                Role.ADMIN: 'Administrator',
+                Role.CUSTOMER: 'Customer',
+                Role.MAINTENANCE: 'Maintenance',
+            }
+
+            for role in roles:
+                found_role = Role.query.filter_by(id=role).first()
+                if not found_role:
+                    found_role = Role()
+                    found_role.id = role
+                found_role.name = roles[role]
+                db.session.add(found_role)
+                db.session.commit()
+
+            # Create admin user and set password
+            admin_username = 'admin'
+            admin = User.query.filter_by(username=admin_username).first()
+            new_password = random_password()
+            if not admin:
+                admin = User()
+            admin.set_password(new_password)
+            admin.username = admin_username
+            for role in Role.query.all():
+                admin.roles.append(role)
+
+            db.session.add(admin)
+            db.session.commit()
+
+            print('Database has been created, use this credentials to log-in:')
+            print('Username: {}'.format(admin_username))
+            print('Password: {}'.format(new_password))
 
     restart_services = input('Restart services to load new configuration ? (y/n) [n]: ') or 'n'
     if restart_services == 'y':
         subprocess.call(['systemctl', 'restart', 'blacklist_celeryworker'])
         subprocess.call(['systemctl', 'restart', 'blacklist_celerybeat'])
         subprocess.call(['systemctl', 'restart', 'blacklist'])
-
-
-@command
-def fixtures(app=None) -> None:
-    if not app:
-        options = parse_options()
-        app = create_app(options)
-    with app.app_context():
-        roles = {
-            Role.GUEST: 'Guest',
-            Role.ADMIN: 'Administrator',
-            Role.CUSTOMER: 'Customer',
-            Role.MAINTENANCE: 'Maintenance',
-        }
-
-        for role in roles:
-            found_role = Role.query.filter_by(id=role).first()
-            if not found_role:
-                found_role = Role()
-                found_role.id = role
-            found_role.name = roles[role]
-            db.session.add(found_role)
-            db.session.commit()
-
-        admin = User.query.filter_by(username='admin').first()
-        if not admin:
-            admin = User()
-            admin.set_password('admin')
-        admin.username = 'admin'
-        for role in Role.query.all():
-            admin.roles.append(role)
-
-        db.session.add(admin)
-        db.session.commit()
 
 
 @command
