@@ -28,4 +28,4 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return flask.redirect(flask.url_for('sign.index.in'))
+    return flask.redirect(flask.url_for('sign.index.login'))
