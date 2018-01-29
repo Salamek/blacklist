@@ -407,11 +407,19 @@ def setup() -> None:
     configuration['HOST'] = input('Host [{}]: '.format(webserver_host)) or webserver_host
     configuration['PORT'] = input('Port [{}]: '.format(webserver_port)) or webserver_port
 
-    # Write new configuration
-    with open(config_path, 'w') as f:
-        yaml.dump(configuration, f, default_flow_style=False, allow_unicode=True)
+    print('Save new configuration ?')
 
-    print('Configuration saved.')
+    for item in configuration:
+        print('{}: {}'.format(item, configuration[item]))
+
+    save_configuration = input('Save ? (y/n) [y]: ') or 'y'
+    if save_configuration == 'y':
+    
+        # Write new configuration
+        with open(config_path, 'w') as f:
+            yaml.dump(configuration, f, default_flow_style=False, allow_unicode=True)
+
+        print('Configuration saved.')
 
     recreate_database = input('Recreate database ? (y/n) [n]: ') or 'n'
     if recreate_database == 'y':
