@@ -7,7 +7,7 @@ User=blacklist
 Type=simple
 Restart=on-failure
 RemainAfterExit=yes
-ExecStart=/usr/bin/blacklist server --config_prod --log_dir /var/log
+ExecStart=/usr/bin/blacklist server --config_prod --log_dir /home/blacklist
 
 [Install]
 WantedBy=multi-user.target

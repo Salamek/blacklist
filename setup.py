@@ -63,6 +63,7 @@ extra_files = [
 extra_files.extend(package_files('blacklist/translations'))
 
 extra_files.extend(package_files('blacklist/static/img'))
+extra_files.extend(package_files('blacklist/static/pdf'))
 
 # Bower components
 extra_files.extend(package_files('blacklist/static/bower_components/bootstrap/dist'))
