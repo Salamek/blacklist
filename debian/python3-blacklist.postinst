@@ -17,7 +17,7 @@ case "$1" in
         systemctl enable blacklist_celerybeat
         systemctl enable blacklist
     else
-        blacklsit migrations upgrade
+        blacklist migrations upgrade
         systemctl daemon-reload
         systemctl restart blacklist
         systemctl restart blacklist_celeryworker
