@@ -20,26 +20,66 @@ Original blacklist is in [PDF](http://www.mfcr.cz/assets/cs/media/Zverejnovane-u
 
 # Installation
 
+Debian, Ubuntu and Archlinux packages are supported!
+
+Blacklist is controled by 3 systemd services:
+```
+blacklist # Runs integrated web server (not needed if you run it behind uwsgi)
+blacklist_celery # To process celery background tasks
+blacklist_celerybeat # To process periodic tasks
+```
+
+## Debian and derivates
+
+Add repository by running these commands
+
+```
+wget -O - https://apt.salamek.cz/apt/conf/salamek.gpg.key|sudo apt-key add -
+echo "deb     https://apt.salamek.cz/apt all main" | sudo tee /etc/apt/sources.list.d/salamek.cz.list
+```
+
+And then you can install a package python3-blacklist
+
+```
+apt update && apt install python3-blacklist
+```
+
+## Archlinux
+
+Add repository by adding this at end of file /etc/pacman.conf
+
+```
+[salamek]
+Server = https://arch.salamek.cz/any
+SigLevel = Optional
+```
+
+and then install by running
+
+```
+pacman -Sy blacklist
+```
+
+## Source install
+
 ```bash
-apt install openjdk-8-jre xvfb wkhtmltoimage
+apt install openjdk-8-jre xvfb wkhtmltoimage redis-server
 git clone https://github.com/Salamek/blacklist.git
 cd blacklist
 pip install -r requirements.txt
-python3 manage.py create_all
-python3 manage.py fixtures
+blacklist post_install --config_prod
 bower install
 python3 manage.py server
-
-```
-
-default username and password are admin:admin
-
-application uses Celery for background tasks, so you should run celeryworker & celerybeat if you want them working :)
-
-```
 python3 manage.py celerybeat
 python3 manage.py celeryworker
 ```
+
+
+Default username and password is admin:admin
+By default, blacklist uses sqlite database stored in /home/blacklist/blacklist.db
+If you wish to change database than run `blacklist setup` command
+
+
 
 # UWSGI
 
@@ -47,11 +87,11 @@ python3 manage.py celeryworker
 [uwsgi]
 uid = www-data
 master = true
-chdir = /path/to/blacklist_dir
-socket = server.sock
-module = run
+chdir = /usr/lib/python3/dist-packages/blacklist
+socket = /var/run/blacklist.sock
+module = wsgi
 callable = app
-plugins = python
+plugins = python3
 buffer-size = 32768
 ```
 
@@ -63,12 +103,10 @@ server {
         listen [::]:80;
         server_name blacklist.example.com;
 
-        root /var/www/blacklist.example.com;
-        access_log /var/www/blacklist.example.com/logs/access.log;
-        error_log /var/www/blacklist.example.com/logs/error.log;
+        root /usr/lib/python3/dist-packages/blacklist;
 
         location / {
-                uwsgi_pass unix:///var/www/blacklist.example.com/server.sock;
+                uwsgi_pass unix:///var/run/blacklist.sock;
                 include uwsgi_params;
         }
 }
