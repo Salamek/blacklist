@@ -48,7 +48,6 @@ def get_image(blacklist_id: int):
     # Find working_images for testing
     images_absolute = []
     for image in images:
-        print(image.get('src'))
         image_absolute = urljoin(website.url, image.get('src'))
         try:
             image_head = requests.head(image_absolute)
