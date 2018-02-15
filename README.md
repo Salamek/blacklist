@@ -83,6 +83,8 @@ If you wish to change database than run `blacklist setup` command
 
 # UWSGI
 
+Here is example UWSGI configuration, dont forgot to stop and disable blacklist service after your uwsgi server is up and running
+
 ```ini
 [uwsgi]
 uid = www-data
