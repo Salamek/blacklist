@@ -414,7 +414,6 @@ def setup() -> None:
 
     save_configuration = input('Save ? (y/n) [y]: ') or 'y'
     if save_configuration == 'y':
-    
         # Write new configuration
         with open(config_path, 'w') as f:
             yaml.dump(configuration, f, default_flow_style=False, allow_unicode=True)
