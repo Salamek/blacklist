@@ -16,7 +16,7 @@ class HardCoded(object):
     SUPPORTED_LANGUAGES = {'cs': 'Čeština', 'en': 'English'}
     LANGUAGE = 'cs'
 
-    BLACKLIST_SOURCE = 'http://www.mfcr.cz/assets/cs/media/Zverejnovane-udaje-ze-Seznamu-nepovolenych-internetovych-her_v{version}.pdf'
+    BLACKLIST_SOURCE = 'https://www.mfcr.cz/assets/cs/media/Zverejnovane-udaje-ze-Seznamu-nepovolenych-internetovych-her_v{version}.pdf'
     BLACKLIST_VERSION_TRY_MAX = 200  # !FIXME Haha poor MF server...
 
 
