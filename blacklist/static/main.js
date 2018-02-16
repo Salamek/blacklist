@@ -67,7 +67,7 @@ function BlockTester()
                loaded_cnt++;
                if (loaded_cnt >= images_cnt)
                {
-                    test_done(images_cnt, loaded_success_cnt, $blockingStatus);
+                    that.testDone(images_cnt, loaded_success_cnt, $blockingStatus);
                }
             }
 
