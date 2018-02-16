@@ -4,6 +4,7 @@ import requests
 from lxml import etree as ElTr
 from flask import jsonify, request, url_for, render_template
 
+from blacklist.extensions import cache
 from blacklist.models.blacklist import Blacklist
 from blacklist.tasks.blacklist import log_block, log_api
 from blacklist.blueprints import api_index
@@ -21,6 +22,7 @@ def get_doc():
 
 
 @api_index.route('/image/<int:blacklist_id>', methods=['GET'])
+@cache.cached(timeout=360)
 def get_image(blacklist_id: int):
     working_images = 2
 

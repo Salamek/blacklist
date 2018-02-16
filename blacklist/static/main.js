@@ -1,106 +1,118 @@
 
-$(function () {
+function BlockTester()
+{
+    this.testDone = function(images_cnt, loaded_success_cnt, $blockingStatus)
+    {
+        var result_url = $blockingStatus.data('result');
+        $.ajax({
+            type: 'POST',
+            url: result_url,
+            async: true,
+            contentType: 'application/json',
+            data: JSON.stringify({
+                'tests': images_cnt,
+                'success': loaded_success_cnt
+            }),
+            success: function(images){
+                console.log('Block info send');
+            },
+            error: function() {
+                console.log('Failed to send block info');
+            }
+        });
+
+        if (images_cnt == loaded_success_cnt)
+        {
+            $blockingStatus.html('Not blocked (' + loaded_success_cnt + '/' + images_cnt + ')');
+            $blockingStatus.removeClass('label-info');
+            $blockingStatus.addClass('label-success');
+        }
+        else if (images_cnt / 2 <= loaded_success_cnt)
+        {
+            $blockingStatus.html('Probably not blocked (' + loaded_success_cnt + '/' + images_cnt + ')');
+            $blockingStatus.removeClass('label-info');
+            $blockingStatus.addClass('label-primary');
+        }
+        else if (images_cnt / 3 <= loaded_success_cnt)
+        {
+            $blockingStatus.html('Blocked or network error. (' + loaded_success_cnt + '/' + images_cnt + ')');
+            $blockingStatus.removeClass('label-info');
+            $blockingStatus.addClass('label-warning');
+        }
+        else
+        {
+            $blockingStatus.html('BLOCKED! (' + loaded_success_cnt + '/' + images_cnt + ')');
+            $blockingStatus.removeClass('label-info');
+            $blockingStatus.addClass('label-danger');
+        }
+    };
+
+    this.loadTestImages = function(images, $blockingStatus)
+    {
+        var that = this;
+        var images_cnt = images.length;
+        var loaded_cnt = 0;
+        var loaded_success_cnt = 0;
+        $.each(images, function(k, image_url){
+            var image = new Image();
+            image.onload = function () {
+               loaded_cnt++;
+               loaded_success_cnt++;
+               if (loaded_cnt >= images_cnt)
+               {
+                    that.testDone(images_cnt, loaded_success_cnt, $blockingStatus);
+               }
+            }
+            image.onerror = function () {
+               loaded_cnt++;
+               if (loaded_cnt >= images_cnt)
+               {
+                    test_done(images_cnt, loaded_success_cnt, $blockingStatus);
+               }
+            }
+
+            image.src = image_url;
+        });
+    };
+
+    this.test = function($blockingStatus)
+    {
+        var url = $blockingStatus.data('url');
+
+        var that = this;
+        $.ajax({
+            type: 'GET',
+            url: url,
+            async: true,
+            success: function(images){
+                if (images.length == 0)
+                {
+                    $blockingStatus.html('Failed to retrieve testing images :(');
+                    $blockingStatus.removeClass('label-info');
+                    $blockingStatus.addClass('label-warning');
+                }
+                else
+                {
+                    that.loadTestImages(images, $blockingStatus);
+                }
+            },
+            error: function() {
+                $blockingStatus.html('Failed to retrieve testing images :(');
+                $blockingStatus.removeClass('label-info');
+                $blockingStatus.addClass('label-warning');
+            }
+        });
+    };
+}
+
+$(document).ready(function(){
     $(document).on('click', '[data-toggle="lightbox"]', function(event) {
         event.preventDefault();
         $(this).ekkoLightbox();
     });
-
+    var blockTester = new BlockTester();
     $('.blocking-status').each(function(){
-        var url = $(this).data('url');
-        var result_url = $(this).data('result');
-        var $that = $(this);
-        var test_done = function(images_cnt, loaded_success_cnt)
-        {
-            $.ajax({
-                type: 'POST',
-                url: result_url,
-                contentType: 'application/json',
-                data: JSON.stringify({
-                    'tests': images_cnt,
-                    'success': loaded_success_cnt
-                }),
-                success: function(images){
-                    console.log('Block info send');
-                },
-                error: function() {
-                    console.log('Failed to send block info');
-                }
-            });
-
-            if (images_cnt == loaded_success_cnt)
-            {
-                $that.html('Not blocked (' + loaded_success_cnt + '/' + images_cnt + ')');
-                $that.removeClass('label-info');
-                $that.addClass('label-success');
-            }
-            else if (images_cnt / 2 <= loaded_success_cnt)
-            {
-                $that.html('Probably not blocked (' + loaded_success_cnt + '/' + images_cnt + ')');
-                $that.removeClass('label-info');
-                $that.addClass('label-primary');
-            }
-            else if (images_cnt / 3 <= loaded_success_cnt)
-            {
-                $that.html('Blocked or network error. (' + loaded_success_cnt + '/' + images_cnt + ')');
-                $that.removeClass('label-info');
-                $that.addClass('label-warning');
-            }
-            else
-            {
-                $that.html('BLOCKED! (' + loaded_success_cnt + '/' + images_cnt + ')');
-                $that.removeClass('label-info');
-                $that.addClass('label-danger');
-            }
-        }
-
-        var image_loader = function (images)
-        {
-            var images_cnt = images.length;
-            var loaded_cnt = 0;
-            var loaded_success_cnt = 0;
-            $.each(images, function(k, image_url){
-                var image = new Image();
-                image.onload = function () {
-                   loaded_cnt++;
-                   loaded_success_cnt++;
-                   if (loaded_cnt >= images_cnt)
-                   {
-                        test_done(images_cnt, loaded_success_cnt);
-                   }
-                }
-                image.onerror = function () {
-                   loaded_cnt++;
-                   if (loaded_cnt >= images_cnt)
-                   {
-                        test_done(images_cnt, loaded_success_cnt);
-                   }
-                }
-
-                image.src = image_url;
-            });
-        }
-
-        $.ajax({
-            type: 'GET',
-            url: url,
-            success: function(images){
-                if (images.length == 0)
-                {
-                    $that.html('Failed to retrieve testing images :(');
-                    $that.removeClass('label-info');
-                    $that.addClass('label-warning');
-                }
-                else
-                {
-                    image_loader(images);
-                }
-            },
-            error: function() {
-                $that.html('Failed to retrieve testing images :(');
-                $that.removeClass('label-info');
-                $that.addClass('label-warning');
-            }
-        });
+        blockTester.test($(this));
     });
 
     $('.api-test').click(function(){

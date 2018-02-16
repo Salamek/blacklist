@@ -200,7 +200,7 @@ def server() -> None:
     setup_logging('server', logging.DEBUG if options.DEBUG else logging.WARNING)
     app = create_app(options)
     log_messages(app)
-    app.run(host=app.config['HOST'], port=int(app.config['PORT']), debug=app.config['DEBUG'])
+    app.run(host=app.config['HOST'], port=int(app.config['PORT']), debug=app.config['DEBUG'], threaded=True)
 
 
 @command
