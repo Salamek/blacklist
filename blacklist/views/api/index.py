@@ -49,6 +49,12 @@ def get_image(blacklist_id: int):
     # Find working_images for testing
     images_absolute = []
     for image in images:
+        image_src = image.get('src')
+
+        # Check if image we found is loaded from checked DNS
+        if 'http' in image_src and item.dns not in image_src:
+            continue
+
         image_absolute = urljoin(website.url, image.get('src'))
         try:
             image_head = requests.head(image_absolute)
