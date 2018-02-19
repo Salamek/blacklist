@@ -4,7 +4,7 @@
 
 <h1>{{ _('Blacklist') }}</h1>
 
-<table class="table table-hover table-bordered">
+<table class="table table-hover table-bordered {% if block_test_enabled %}test-enabled{% endif %}">
     <thead>
     <tr>
         <th colspan="8" class="text-center">Item info</th>
@@ -16,7 +16,11 @@
         <th>{{ _('DNS') }}</th>
         <th>{{ _('Bank account') }}</th>
         <th>{{ _('Note') }}</th>
-        <th>{{ _('Your provider blocking status') }}</th>
+        <th class="text-center">{{ _('Your provider blocking status') }}
+            <br>
+            <a href="{{url_for('home.index.test_enable')}}" class="confirm btn btn-xs btn-success {% if block_test_enabled %} hidden{% endif %}" data-confirm-message="{{_('This will enable website block testing, testing images will be downloaded from blacklisted domains by your browser to test if it will be blocked by your Internet provider. This test may leak some information about you (IP, UserAgent) to the tested website.')}}">Enable block test</a>
+            <a href="{{url_for('home.index.test_disable')}}" class="btn btn-xs btn-danger {% if not block_test_enabled %} hidden{% endif %}">Disable block test</a>
+        </th>
         <th>{{ _('Updated') }}</th>
         <th>{{ _('Created') }}</th>
         <th>{{ _('Published') }}</th>
@@ -41,7 +45,7 @@
         </td>
         <td>{{item.bank_account}}</td>
         <td>{{item.note}}</td>
-        <td class="text-center"><div class="label blocking-status label-info" data-url="{{url_for('api.index.get_image', blacklist_id=item.id)}}" data-result="{{url_for('api.index.log_blocks', blacklist_id=item.id)}}">Checking...</div></td>
+        <td class="text-center"><div class="label blocking-status {% if block_test_enabled %}label-info{% else %}label-default{% endif %}" data-url="{{url_for('api.index.get_image', blacklist_id=item.id)}}" data-result="{{url_for('api.index.log_blocks', blacklist_id=item.id)}}">{{_('Testing...' if block_test_enabled else 'Block test is disabled...')}}</div></td>
         <td>{{item.updated|format_datetime}}</td>
         <td>{{item.created|format_datetime}}</td>
         <td>

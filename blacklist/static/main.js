@@ -21,28 +21,25 @@ function BlockTester()
             }
         });
 
+        $blockingStatus.removeClass('label-info');
         if (images_cnt == loaded_success_cnt)
         {
             $blockingStatus.html('Not blocked (' + loaded_success_cnt + '/' + images_cnt + ')');
-            $blockingStatus.removeClass('label-info');
             $blockingStatus.addClass('label-success');
         }
         else if (images_cnt / 2 <= loaded_success_cnt)
         {
             $blockingStatus.html('Probably not blocked (' + loaded_success_cnt + '/' + images_cnt + ')');
-            $blockingStatus.removeClass('label-info');
             $blockingStatus.addClass('label-primary');
         }
         else if (images_cnt / 3 <= loaded_success_cnt)
         {
             $blockingStatus.html('Blocked or network error. (' + loaded_success_cnt + '/' + images_cnt + ')');
-            $blockingStatus.removeClass('label-info');
             $blockingStatus.addClass('label-warning');
         }
         else
         {
             $blockingStatus.html('BLOCKED! (' + loaded_success_cnt + '/' + images_cnt + ')');
-            $blockingStatus.removeClass('label-info');
             $blockingStatus.addClass('label-danger');
         }
     };
@@ -111,7 +108,7 @@ $(document).ready(function(){
         $(this).ekkoLightbox();
     });
     var blockTester = new BlockTester();
-    $('.blocking-status').each(function(){
+    $('.test-enabled .blocking-status').each(function(){
         blockTester.test($(this));
     });
 
