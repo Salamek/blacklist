@@ -5,6 +5,7 @@ from lxml import etree as ElTr
 from flask import jsonify, request, url_for, render_template
 
 from blacklist.extensions import cache
+from blacklist.tools.helpers import fix_url
 from blacklist.models.blacklist import Blacklist
 from blacklist.tasks.blacklist import log_block, log_api
 from blacklist.blueprints import api_index
@@ -28,9 +29,7 @@ def get_image(blacklist_id: int):
 
     item = Blacklist.query.filter(Blacklist.id == blacklist_id).first_or_404()
 
-    url = item.dns
-    if not url.startswith('http'):
-        url = 'http://{}'.format(url)
+    url = fix_url(item.dns)
 
     # Find all images on website
     try:
@@ -109,6 +108,7 @@ def get_blacklist(page: int):
             'bank_account_date_published': row.bank_account_date_published,
             'bank_account_date_removed': row.bank_account_date_removed,
             'note': row.note,
+            'redirects_to': row.redirects_to,
             'updated': row.updated,
             'created': row.created
         })

@@ -13,17 +13,6 @@ def format_bytes(num: int, suffix: str='B') -> str:
     return "%.1f%s%s" % (num, 'Yi', suffix)
 
 
-def fix_url(url: str) -> str:
-    """
-    Fixes url
-    :param url:
-    :return:
-    """
-    if not url.startswith('http'):
-        url = 'http://{}'.format(url)
-    return url
-
-
 def format_boolean(bool_to_format: bool) -> str:
     """
     Formats boolean

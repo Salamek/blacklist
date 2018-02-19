@@ -30,7 +30,15 @@
     <tr>
         <th scope="row">{{item.id}}</th>
         <th>{% if item.thumbnail %}<a href="{{ url_for('static', filename='img/thumbnails/{}.png'.format(item.id))}}" title="{{item.dns}}" data-toggle="lightbox" data-width="1024"><img src="{{ url_for('static', filename='img/thumbnails/thumbnail_{}.png'.format(item.id))}}" alt="{{item.dns}}" width="200" height="100"></a>{% endif %}</th>
-        <td><a href="{{item.dns|fix_url}}" target="_blank">{{item.dns}}</a></td>
+        <td>
+            <a href="{{item.dns|fix_url}}" title="{{_("Blocked DNS")}}" target="_blank">{{item.dns}}</a>
+            {% if item.redirects_to %}
+                <br>
+                <i class="fa fa-arrow-right"></i>
+                <br>
+                <a href="{{item.redirects_to|fix_url}}" title="{{_("Redirects to %(url)s", url=item.redirects_to)}}" target="_blank">{{item.redirects_to}}</a>
+            {% endif %}
+        </td>
         <td>{{item.bank_account}}</td>
         <td>{{item.note}}</td>
         <td class="text-center"><div class="label blocking-status label-info" data-url="{{url_for('api.index.get_image', blacklist_id=item.id)}}" data-result="{{url_for('api.index.log_blocks', blacklist_id=item.id)}}">Checking...</div></td>

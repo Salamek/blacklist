@@ -14,7 +14,8 @@ from flask_babel import format_datetime, format_date
 from flask_login import current_user
 from blacklist.extensions import navigation, login_manager, babel, db
 from blacklist.models.blacklist import Pdf, Role
-from blacklist.tools.formaters import format_bytes, fix_url, format_boolean
+from blacklist.tools.formaters import format_bytes, format_boolean
+from blacklist.tools.helpers import fix_url
 from blacklist.tools.Acl import Acl
 from markupsafe import Markup
 

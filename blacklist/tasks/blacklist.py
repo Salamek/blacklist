@@ -11,6 +11,7 @@ from flask_celery import single_instance
 from sqlalchemy import or_
 from logging import getLogger
 from blacklist.extensions import celery, db
+from blacklist.tools.helpers import fix_url
 from blacklist.models.blacklist import BlockingLog, ApiLog, Pdf, Blacklist
 from blacklist.tools.Validators import Validators
 from blacklist.application import STATIC_FOLDER
@@ -147,7 +148,7 @@ def crawl_blacklist(task_id: str=None) -> None:
                 blacklist = Blacklist()
                 blacklist.dns = dns
                 blacklist.last_crawl = None
-            blacklist.bank_account = bank_account
+            blacklist.bank_account = bank_account if bank_account else None
             blacklist.dns_date_published = dns_date_published
             blacklist.dns_date_removed = dns_date_removed
             blacklist.bank_account_date_published = bank_account_date_published
@@ -197,6 +198,13 @@ def crawl_dns_info(task_id: str=None, only_new: bool=False) -> None:
         except Exception as e:
             print('Failed to obtain DNS thumbnail: {}'.format(e))
             blacklist_detail.thumbnail = False
+
+        check_url = fix_url(blacklist_detail.dns)
+        try:
+            result = requests.get(check_url)
+            blacklist_detail.redirects_to = result.url
+        except Exception as e:
+            blacklist_detail.redirects_to = None
 
         blacklist_detail.last_crawl = datetime.datetime.now()
         db.session.add(blacklist_detail)

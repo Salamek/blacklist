@@ -117,6 +117,7 @@ class Blacklist(BaseTable):
     bank_account_date_removed = db.Column(db.DateTime)
     last_crawl = db.Column(db.DateTime)
     note = db.Column(db.String(255))
+    redirects_to = db.Column(db.String(255), nullable=True)
 
     pdfs = relationship(
         "Pdf",
