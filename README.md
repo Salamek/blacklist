@@ -13,11 +13,6 @@ Original blacklist is in [PDF](http://www.mfcr.cz/assets/cs/media/Zverejnovane-u
 * Your provider blocking info
 * OSS :)
 
-# TODO
-
-* List of blocking providers
-* Blocking vs not blocking requests stats
-
 # Installation
 
 Debian, Ubuntu and Archlinux packages are supported!
