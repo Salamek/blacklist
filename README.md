@@ -20,7 +20,7 @@ Debian, Ubuntu and Archlinux packages are supported!
 Blacklist is controled by 3 systemd services:
 ```
 blacklist # Runs integrated web server (not needed if you run it behind uwsgi)
-blacklist_celery # To process celery background tasks
+blacklist_celeryworker # To process celery background tasks
 blacklist_celerybeat # To process periodic tasks
 ```
 
