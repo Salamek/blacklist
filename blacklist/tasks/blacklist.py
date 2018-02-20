@@ -133,7 +133,7 @@ def crawl_blacklist(task_id: str=None) -> None:
             if len(row) != 7:
                 continue
 
-            dns = row[1].strip()  # Required
+            dns = row[1].strip().lower()  # Required
             if not Validators.is_valid_hostname(dns):
                 continue
 
