@@ -55,7 +55,12 @@ def get_image(blacklist_id: int):
         if 'http' in image_src and item.dns not in image_src:
             continue
 
-        image_absolute = urljoin(website.url, image.get('src'))
+        # Use resolved url only when it is same domain as blocked DNS
+        if item.dns in website.url:
+            image_absolute = urljoin(website.url, image.get('src'))
+        else:
+            image_absolute = urljoin(url, image.get('src'))
+
         try:
             image_head = requests.head(image_absolute)
             if image_head.headers['content-type'].startswith('image'):
