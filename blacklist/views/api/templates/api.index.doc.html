@@ -4,7 +4,7 @@
 
 <h1>{{ _('API Doc') }}</h1>
 
-<p>To fetch a whole blacklist, simply run:</p>
+<h2>To fetch a whole blacklist, simply run:</h2>
 
 <div class="panel panel-default">
   <div class="panel-body">
@@ -16,7 +16,7 @@
     <a href="#" class="btn btn-primary api-test" data-url="{{url_for('api.index.get_blacklist', _external=True)}}">Try it!</a>
 </p>
 
-<p>Or if you like paged result:</p>
+<h2>Or if you like paged result:</h2>
 
 <div class="panel panel-default">
   <div class="panel-body">
@@ -26,6 +26,29 @@
 
 <p>
     <a href="#" class="btn btn-primary api-test" data-url="{{url_for('api.index.get_blacklist', _external=True, per_page=10, page=1)}}">Try it!</a>
+</p>
+
+<h2>Basic filtering:</h2>
+
+<div class="panel panel-default">
+  <div class="panel-body">
+    <code>curl {{url_for('api.index.get_blacklist', _external=True, bank_account='CZ')}}</code>
+ </div>
+</div>
+
+<p>
+    Allowed arguments are:
+</p>
+<ul>
+    <li><b>dns</b>: Filter by blocked DNS </li>
+    <li><b>redirects_to</b>: Filter by final URL</li>
+    <li><b>a</b>: Filter by IPv4 address</li>
+    <li><b>aaaa</b>: Filter by IPv6 address</li>
+    <li><b>bank_account</b>: Filter by bank account</li>
+</ul>
+
+<p>
+    <a href="#" class="btn btn-primary api-test" data-url="{{url_for('api.index.get_blacklist', _external=True, bank_account='CZ')}}">Try it!</a>
 </p>
 
 {% endblock %}

@@ -28,4 +28,3 @@ def get_hosts():
         mimetype="text/plain",
         headers={"Content-disposition":
                  "attachment; filename=hosts"})
-

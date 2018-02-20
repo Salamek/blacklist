@@ -86,9 +86,25 @@ def log_blocks(blacklist_id: int):
 @api_index.route('/blacklist', methods=['GET'], defaults={'page': 1})
 @api_index.route('/blacklist/page/<int:page>', methods=['GET'])
 def get_blacklist(page: int):
-    data = Blacklist.query.filter().order_by(Blacklist.created.desc())
-
     log_api.delay(request.remote_addr)
+
+    blacklist_filter = []
+    if 'dns' in request.args:
+        blacklist_filter.append(Blacklist.dns.like("%{}%".format(request.args['dns'])))
+
+    if 'redirects_to' in request.args:
+        blacklist_filter.append(Blacklist.redirects_to.like("%{}%".format(request.args['redirects_to'])))
+
+    if 'a' in request.args:
+        blacklist_filter.append(Blacklist.a.like("%{}%".format(request.args['a'])))
+
+    if 'aaaa' in request.args:
+        blacklist_filter.append(Blacklist.aaaa.like("%{}%".format(request.args['aaaa'])))
+
+    if 'bank_account' in request.args:
+        blacklist_filter.append(Blacklist.bank_account.like("%{}%".format(request.args['bank_account'])))
+
+    data = Blacklist.query.filter(*blacklist_filter).order_by(Blacklist.created.desc())
 
     if 'per_page' in request.args:
         per_page = int(request.args['per_page'])

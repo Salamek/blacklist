@@ -1,13 +1,58 @@
 {% extends "base.html" %}
 {% from 'macros.html' import render_pagination %}
+{% from "_formhelpers.html" import render_field %}
 {% block body %}
 
-<h1>{{ _('Blacklist') }}</h1>
+<h1>{{ _('Blacklist') }} <a class="btn btn-default btn-lg" role="button" data-toggle="collapse" href="#collapseFilter" aria-expanded="false" aria-controls="collapseFilter">
+    <i class="fa fa-search" aria-hidden="true"></i>
+</a>
+</h1>
+
+
+<div class="collapse {%if filtered%}in{% endif %}" id="collapseFilter">
+    <div class="well">
+        <form method="post" role="form" action="{{url_for('home.index.get_home')}}">
+            {% if form.errors %}
+            <div class="alert alert-danger">
+                There was some errors when proccesing a form.
+                {% for field, errors in form.errors.items() %}
+                {% endfor %}
+            </div>
+            {% endif %}
+            <div class="row">
+                <div class="col-xs-3 col-sm-3 col-md-3">
+                    {{render_field(form.dns, 'form-group', _('DNS'))}}
+                </div>
+                <div class="col-xs-3 col-sm-3 col-md-3">
+                    {{render_field(form.redirects_to, 'form-group', _('Redirects'))}}
+                </div>
+                <div class="col-xs-3 col-sm-3 col-md-3">
+                    {{render_field(form.a, 'form-group', _('IPv4'))}}
+                </div>
+                <div class="col-xs-3 col-sm-3 col-md-3">
+                    {{render_field(form.aaaa, 'form-group', _('IPv6'))}}
+                </div>
+                <div class="col-xs-3 col-sm-3 col-md-3">
+                    {{render_field(form.bank_account, 'form-group', _('Bank account'))}}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6 col-sm-6 col-md-6">
+                    {{form.reset(class_="btn btn-default btn-block")}}
+                </div>
+                <div class="col-xs-6 col-sm-6 col-md-6">
+                    {{form.filter(class_="btn btn-primary btn-block")}}
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
 
 <table class="table table-hover table-bordered {% if block_test_enabled %}test-enabled{% endif %}">
     <thead>
     <tr>
-        <th colspan="9" class="text-center">Item info</th>
+        <th colspan="9" class="text-center">Item info (Displaying {{pagination.items|length}} of {{pagination.total}} items)</th>
         <th colspan="1" class="text-center">Blocking request info</th>
     </tr>
     <tr>
