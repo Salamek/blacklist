@@ -13,11 +13,6 @@ Original blacklist is in [PDF](http://www.mfcr.cz/assets/cs/media/Zverejnovane-u
 * Your provider blocking info
 * OSS :)
 
-# TODO
-
-* List of blocking providers
-* Blocking vs not blocking requests stats
-
 # Installation
 
 Debian, Ubuntu and Archlinux packages are supported!
@@ -34,14 +29,14 @@ blacklist_celerybeat # To process periodic tasks
 Add repository by running these commands
 
 ```
-wget -O - https://apt.salamek.cz/apt/conf/salamek.gpg.key|sudo apt-key add -
-echo "deb     https://apt.salamek.cz/apt all main" | sudo tee /etc/apt/sources.list.d/salamek.cz.list
+$ wget -O - https://apt.salamek.cz/apt/conf/salamek.gpg.key|sudo apt-key add -
+$ echo "deb     https://apt.salamek.cz/apt all main" | sudo tee /etc/apt/sources.list.d/salamek.cz.list
 ```
 
 And then you can install a package python3-blacklist
 
 ```
-apt update && apt install python3-blacklist
+$ apt update && apt install python3-blacklist
 ```
 
 ## Archlinux
@@ -57,29 +52,31 @@ SigLevel = Optional
 and then install by running
 
 ```
-pacman -Sy blacklist
+$ pacman -Sy blacklist
 ```
 
 ## Source install
 
 ```bash
-apt install openjdk-8-jre xvfb wkhtmltoimage redis-server
-git clone https://github.com/Salamek/blacklist.git
-cd blacklist
-pip install -r requirements.txt
-blacklist post_install --config_prod
-bower install
-python3 manage.py server
-python3 manage.py celerybeat
-python3 manage.py celeryworker
+$ apt install openjdk-8-jre xvfb wkhtmltoimage redis-server
+$ git clone https://github.com/Salamek/blacklist.git
+$ cd blacklist
+$ pip install -r requirements.txt
+$ blacklist post_install --config_prod
+$ bower install
+$ python3 manage.py server
+$ python3 manage.py celerybeat
+$ python3 manage.py celeryworker
 ```
 
+# Setup
 
-Default username and password is admin:admin
-By default, blacklist uses sqlite database stored in /home/blacklist/blacklist.db
-If you wish to change database than run `blacklist setup` command
+After successful install you should run a setup script to configure your installation (database type, credentials, webserver) and generate default user:
 
-
+```bash
+$ blacklist setup
+# Or python3 manage.py setup for source install
+```
 
 # UWSGI
 
