@@ -18,3 +18,4 @@ docopt
 pyyaml
 celery
 lxml
+dnspython

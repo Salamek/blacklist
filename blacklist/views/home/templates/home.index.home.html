@@ -7,7 +7,7 @@
 <table class="table table-hover table-bordered {% if block_test_enabled %}test-enabled{% endif %}">
     <thead>
     <tr>
-        <th colspan="8" class="text-center">Item info</th>
+        <th colspan="9" class="text-center">Item info</th>
         <th colspan="1" class="text-center">Blocking request info</th>
     </tr>
     <tr>
@@ -15,6 +15,7 @@
         <th>{{ _('Image') }}</th>
         <th>{{ _('DNS') }}</th>
         <th>{{ _('Bank account') }}</th>
+        <th>{{ _('Resolved IPs') }}</th>
         <th>{{ _('Note') }}</th>
         <th class="text-center">{{ _('Your provider blocking status') }}
             <br>
@@ -33,7 +34,7 @@
     {% for item in pagination.items %}
     <tr>
         <th scope="row">{{item.id}}</th>
-        <th>{% if item.thumbnail %}<a href="{{ url_for('static', filename='img/thumbnails/{}.png'.format(item.id))}}" title="{{item.dns}}" data-toggle="lightbox" data-width="1024"><img src="{{ url_for('static', filename='img/thumbnails/thumbnail_{}.png'.format(item.id))}}" alt="{{item.dns}}" width="200" height="100"></a>{% endif %}</th>
+        <td>{% if item.thumbnail %}<a href="{{ url_for('static', filename='img/thumbnails/{}.png'.format(item.id))}}" title="{{item.dns}}" data-toggle="lightbox" data-width="1024"><img src="{{ url_for('static', filename='img/thumbnails/thumbnail_{}.png'.format(item.id))}}" alt="{{item.dns}}" width="100" height="200"></a>{% endif %}</td>
         <td>
             <a href="{{item.dns|fix_url}}" title="{{_("Blocked DNS")}}" target="_blank">{{item.dns}}</a>
             {% if item.redirects_to %}
@@ -44,6 +45,7 @@
             {% endif %}
         </td>
         <td>{{item.bank_account}}</td>
+        <td>IPv4:{{item.a}} <br> IPv6:{{item.aaaa}}</td>
         <td>{{item.note}}</td>
         <td class="text-center"><div class="label blocking-status {% if block_test_enabled %}label-info{% else %}label-default{% endif %}" data-url="{{url_for('api.index.get_image', blacklist_id=item.id)}}" data-result="{{url_for('api.index.log_blocks', blacklist_id=item.id)}}">{{_('Testing...' if block_test_enabled else 'Block test is disabled...')}}</div></td>
         <td>{{item.updated|format_datetime}}</td>

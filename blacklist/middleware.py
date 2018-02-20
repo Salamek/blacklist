@@ -84,6 +84,7 @@ def before_request():
     menu_items.append(navigation.Item('Home', 'home.index.get_home'))
     menu_items.append(navigation.Item('PDF Crawl log', 'crawl.index.get_crawl'))
     menu_items.append(navigation.Item('API', 'api.index.get_doc'))
+    menu_items.append(navigation.Item('Downloads', 'download.index.get_download'))
 
     if current_user.is_authenticated and Acl.validate([Role.ADMIN], current_user):
         menu_items.append(navigation.Item('Users', 'user.index.get_user'))

@@ -118,6 +118,8 @@ class Blacklist(BaseTable):
     last_crawl = db.Column(db.DateTime)
     note = db.Column(db.String(255))
     redirects_to = db.Column(db.String(255), nullable=True)
+    a = db.Column(db.String(255), nullable=True)
+    aaaa = db.Column(db.String(255), nullable=True)
 
     pdfs = relationship(
         "Pdf",

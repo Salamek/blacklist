@@ -7,6 +7,7 @@ import tabula
 import csv
 import PyPDF2
 import requests
+import dns.resolver
 from flask_celery import single_instance
 from sqlalchemy import or_
 from logging import getLogger
@@ -199,12 +200,27 @@ def crawl_dns_info(task_id: str=None, only_new: bool=False) -> None:
             print('Failed to obtain DNS thumbnail: {}'.format(e))
             blacklist_detail.thumbnail = False
 
+        # Check redirect URL
         check_url = fix_url(blacklist_detail.dns)
         try:
             result = requests.get(check_url)
             blacklist_detail.redirects_to = result.url
-        except Exception as e:
+        except Exception:
             blacklist_detail.redirects_to = None
+
+        # Check A record
+        try:
+            answers = dns.resolver.query(blacklist_detail.dns, 'A')
+            blacklist_detail.a = str(answers[0])
+        except Exception:
+            blacklist_detail.a = None
+
+        # Check AAAA record
+        try:
+            answers = dns.resolver.query(blacklist_detail.dns, 'AAAA')
+            blacklist_detail.aaaa = str(answers[0])
+        except Exception:
+            blacklist_detail.aaaa = None
 
         blacklist_detail.last_crawl = datetime.datetime.now()
         db.session.add(blacklist_detail)
