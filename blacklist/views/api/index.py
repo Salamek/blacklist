@@ -44,12 +44,24 @@ def get_image(blacklist_id: int):
     parser = ElTr.HTMLParser(recover=True)
     el = ElTr.ElementTree(ElTr.fromstring(website.text, parser))
     root = el.getroot()
-    images = root.iter('img')
+
+    images_raw = []
+
+    # Lets try find standard images
+    for image in root.iter('img'):
+        images_raw.append(image.get('src'))
+
+    # Lets try find favicons cos idiotic websites written in javascript
+    for image in root.findall(".//link[@rel='icon']"):
+        images_raw.append(image.get('href'))
+
+    # And favicons with idiotic IE syntax
+    for image in root.findall(".//link[@rel='shortcut icon']"):
+        images_raw.append(image.get('href'))
 
     # Find working_images for testing
     images_absolute = []
-    for image in images:
-        image_src = image.get('src')
+    for image_src in images_raw:
 
         # Check if image we found is loaded from checked DNS
         if 'http' in image_src and item.dns not in image_src:
@@ -57,12 +69,12 @@ def get_image(blacklist_id: int):
 
         # Use resolved url only when it is same domain as blocked DNS
         if item.dns in website.url:
-            image_absolute = urljoin(website.url, image.get('src'))
+            image_absolute = urljoin(website.url, image_src)
         else:
-            image_absolute = urljoin(url, image.get('src'))
+            image_absolute = urljoin(url, image_src)
 
         try:
-            image_head = requests.head(image_absolute)
+            image_head = requests.head(image_absolute, allow_redirects=True)
             if image_head.headers['content-type'].startswith('image'):
                 images_absolute.append(image_absolute)
 
