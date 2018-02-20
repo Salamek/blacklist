@@ -225,4 +225,4 @@ def crawl_dns_info(task_id: str=None, only_new: bool=False) -> None:
 
         blacklist_detail.last_crawl = datetime.datetime.now()
         db.session.add(blacklist_detail)
-    db.session.commit()
+        db.session.commit()
