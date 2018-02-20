@@ -38,10 +38,11 @@ def log_block(task_id: str, blacklist_id: int, remote_addr: str, tests: int, suc
 
 @celery.task(bind=True)
 def log_api(task_id: str, remote_addr: str) -> None:
-    found = ApiLog.query.filter_by(remote_addr=remote_addr).first()
+    found = ApiLog.query.filter_by(remote_addr=remote_addr, date=datetime.datetime.now()).first()
     if not found:
         found = ApiLog()
         found.remote_addr = remote_addr
+        found.date = datetime.datetime.now()
         found.requests = 1
     else:
         found.requests = found.requests + 1

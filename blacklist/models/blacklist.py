@@ -143,6 +143,7 @@ class ApiLog(BaseTable):
     id = db.Column(db.Integer, primary_key=True)
     remote_addr = db.Column(db.String(255))
     requests = db.Column(db.Integer)
+    date = db.Column(db.Date)
 
 
 class Pdf(BaseTable):

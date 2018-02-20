@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% from 'macros.html' import render_pagination %}
+{% block body %}
+
+<h1>{{ _('Statistics') }}</h1>
+
+<h2>{{_('Blocking rate')}}</h2>
+
+{{blocking_success_chart.render().decode()|safe}}
+
+<h2>{{_('Blacklist grow')}}</h2>
+
+{{blacklist_grow_chart.render().decode()|safe}}
+
+<h2>{{_('API Usage')}}</h2>
+
+{{api_usage_chart.render().decode()|safe}}
+
+<h2>{{_('API per IP usage')}}</h2>
+
+{{api_ip_usage_chart.render().decode()|safe}}
+
+{% endblock %}

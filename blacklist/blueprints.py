@@ -35,6 +35,7 @@ blacklist_index = _factory('blacklist.index', '/blacklist')
 crawl_index = _factory('crawl.index', '/crawl')
 user_index = _factory('user.index', '/user')
 download_index = _factory('download.index', '/download')
+statistics_index = _factory('statistics.index', '/statistics')
 
 
 all_blueprints = (
@@ -44,5 +45,6 @@ all_blueprints = (
     blacklist_index,
     crawl_index,
     user_index,
-    download_index
+    download_index,
+    statistics_index
 )
