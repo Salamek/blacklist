@@ -1,6 +1,7 @@
 import flask
 import hashlib
-from flask_babel import format_date
+import datetime
+from flask_babel import format_date, gettext
 from sqlalchemy.sql import func
 from blacklist.models.blacklist import Pdf, BlockingLog, ApiLog
 import pygal
@@ -54,18 +55,20 @@ def get_statistics():
 
     blacklist_grow_chart.x_labels = blacklist_grow_x_labels
 
+    api_usage_day_limit = 30
     api_usage_chart = pygal.Bar(
         width=1200,
         height=400,
         explicit_size=True,
-        title='API Usage',
+        title=gettext('API Usage for last %(days)s days', days=api_usage_day_limit),
         style=DarkSolarizedStyle
     )
 
+    from_date = datetime.datetime.today() - datetime.timedelta(days=api_usage_day_limit)
     days = db.session.query(
         func.sum(ApiLog.requests).label("requests_all"),
         ApiLog.date
-    ).filter().group_by(ApiLog.date).order_by(ApiLog.date.asc())
+    ).filter(ApiLog.date >= from_date).group_by(ApiLog.date).order_by(ApiLog.date.asc())
 
     api_usage_x_labels = []
     api_usage_data = []
@@ -76,18 +79,20 @@ def get_statistics():
 
     api_usage_chart.x_labels = api_usage_x_labels
 
+    api_ip_usage_day_limit = 30
     api_ip_usage_chart = pygal.Bar(
         width=1200,
         height=400,
         explicit_size=True,
-        title='API IP usage (Real IP encoded by sha256)',
+        title=gettext('API IP usage for last %(days)s days (Real IP encoded by sha256)', days=api_ip_usage_day_limit),
         style=DarkSolarizedStyle
     )
 
+    from_date = datetime.datetime.today() - datetime.timedelta(days=api_ip_usage_day_limit)
     ips = db.session.query(
         func.sum(ApiLog.requests).label("requests_all"),
         ApiLog.remote_addr
-    ).filter().group_by(ApiLog.remote_addr).order_by("requests_all")
+    ).filter(ApiLog.date >= from_date).group_by(ApiLog.remote_addr).order_by("requests_all")
 
     api_ip_usage_x_labels = []
     api_ip_usage_data = []
