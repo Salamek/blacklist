@@ -7,7 +7,7 @@ User=blacklist
 Type=simple
 Restart=on-failure
 RemainAfterExit=yes
-ExecStart=/usr/bin/blacklist celerybeat --config_prod
+ExecStart=/usr/bin/blacklist celerybeat --config_prod --pid=${HOME}/celerybeat.pid --schedule=${HOME}/celery_beat.db
 
 [Install]
 WantedBy=multi-user.target
