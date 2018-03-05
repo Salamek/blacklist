@@ -87,7 +87,7 @@ Here is example UWSGI configuration, dont forgot to stop and disable blacklist s
 uid = www-data
 master = true
 chdir = /usr/lib/python3/dist-packages/blacklist
-socket = /var/run/blacklist.sock
+socket = /tmp/uwsgi-blacklist.sock
 module = wsgi
 callable = app
 plugins = python3
@@ -105,7 +105,7 @@ server {
         root /usr/lib/python3/dist-packages/blacklist;
 
         location / {
-                uwsgi_pass unix:///var/run/blacklist.sock;
+                uwsgi_pass unix:///tmp/uwsgi-blacklist.sock;
                 include uwsgi_params;
         }
 }
