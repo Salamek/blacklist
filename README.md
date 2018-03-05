@@ -84,7 +84,7 @@ Here is example UWSGI configuration, dont forgot to stop and disable blacklist s
 
 ```ini
 [uwsgi]
-uid = www-data
+uid = blacklist
 master = true
 chdir = /usr/lib/python3/dist-packages/blacklist
 socket = /tmp/uwsgi-blacklist.sock
