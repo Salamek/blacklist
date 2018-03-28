@@ -150,6 +150,7 @@ def crawl_blacklist(task_id: str=None) -> None:
                 blacklist = Blacklist()
                 blacklist.dns = dns
                 blacklist.last_crawl = None
+                blacklist.thumbnail = False
             blacklist.bank_account = bank_account if bank_account else None
             blacklist.dns_date_published = dns_date_published
             blacklist.dns_date_removed = dns_date_removed
@@ -199,7 +200,6 @@ def crawl_dns_info(task_id: str=None, only_new: bool=False) -> None:
             blacklist_detail.thumbnail = True
         except Exception as e:
             print('Failed to obtain DNS thumbnail: {}'.format(e))
-            blacklist_detail.thumbnail = False
 
         # Check redirect URL
         check_url = fix_url(blacklist_detail.dns)
