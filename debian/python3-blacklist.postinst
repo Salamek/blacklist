@@ -7,12 +7,21 @@ case "$1" in
 
   configure)
     if [ -z "$2" ]; then
+        echo "Adding blacklist user"
         useradd -m blacklist
+
         systemctl daemon-reload
         blacklist post_install --config_prod
+
+        echo "Startign blacklist service"
         systemctl start blacklist
+
+        echo "Startign blacklist_celeryworker service"
         systemctl start blacklist_celeryworker
+
+        echo "Startign blacklist_celerybeat service"
         systemctl start blacklist_celerybeat
+        
         systemctl enable blacklist_celeryworker
         systemctl enable blacklist_celerybeat
         systemctl enable blacklist
@@ -21,14 +30,17 @@ case "$1" in
         systemctl daemon-reload
         
         if systemctl is-active --quiet blacklist || systemctl is-enabled --quiet blacklist; then
+            echo "Restarting blacklist service"
             systemctl restart blacklist
         fi
         
         if systemctl is-active --quiet blacklist_celeryworker || systemctl is-enabled --quiet blacklist_celeryworker; then
+            echo "Restarting blacklist_celeryworker service"
             systemctl restart blacklist_celeryworker
         fi
         
         if systemctl is-active --quiet blacklist_celerybeat || systemctl is-enabled --quiet blacklist_celerybeat; then
+            echo "Restarting blacklist_celerybeat service"
             systemctl restart blacklist_celerybeat
         fi
     fi
