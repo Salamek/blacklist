@@ -186,8 +186,10 @@ def crawl_dns_info(task_id: str=None, only_new: bool=False) -> None:
             thumbnail_folder = os.path.join(STATIC_FOLDER, 'img', 'thumbnails')
             file_path = os.path.join(thumbnail_folder, '{}.png'.format(blacklist_detail.id))
             thumbnail_file_path = os.path.join(thumbnail_folder, 'thumbnail_{}.png'.format(blacklist_detail.id))
-            subprocess.call(["xvfb-run", "--", "wkhtmltoimage", '--width', '1280', blacklist_detail.dns, file_path])
+            LOG.debug('Saving screenshot to {}'.format(file_path))
+            subprocess.call(["xvfb-run", "--auto-servernum", "--", "wkhtmltoimage", '--width', '1280', blacklist_detail.dns, file_path])
 
+            LOG.debug('Saving thumbnail to {}'.format(thumbnail_file_path))
             size = (100, 200)
             image = Image.open(file_path)
             image.thumbnail(size, Image.ANTIALIAS)
@@ -199,7 +201,7 @@ def crawl_dns_info(task_id: str=None, only_new: bool=False) -> None:
 
             blacklist_detail.thumbnail = True
         except Exception as e:
-            print('Failed to obtain DNS thumbnail: {}'.format(e))
+            LOG.warning('Failed to obtain DNS thumbnail: {}'.format(e))
 
         # Check redirect URL
         check_url = fix_url(blacklist_detail.dns)
