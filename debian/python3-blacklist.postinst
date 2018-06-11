@@ -8,7 +8,7 @@ case "$1" in
   configure)
     if [ -z "$2" ]; then
         echo "Adding blacklist user"
-        useradd -m blacklist
+        id -u blacklist &>/dev/null || useradd -m blacklist
         mkdir -p /home/blacklist/pdfs
         mkdir -p /home/blacklist/thumbnails
         chown blacklist:blacklist /home/blacklist/pdfs
