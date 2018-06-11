@@ -2,11 +2,11 @@
 
 import requests
 from lxml import etree as ElTr
-from flask import jsonify, request, url_for, render_template
+from flask import jsonify, request, url_for, render_template, send_from_directory, current_app
 
 from blacklist.extensions import cache
 from blacklist.tools.helpers import fix_url
-from blacklist.models.blacklist import Blacklist
+from blacklist.models.blacklist import Blacklist, Pdf
 from blacklist.tasks.blacklist import log_block, log_api
 from blacklist.blueprints import api_index
 
@@ -100,6 +100,30 @@ def log_blocks(blacklist_id: int):
     return jsonify({}), 200
 
 
+@api_index.route('/thumbnail/<int:blacklist_id>.png', methods=['GET'])
+def get_thumbnail(blacklist_id: int):
+
+    blacklist = Blacklist.query.filter_by(id=blacklist_id).first()
+    if not blacklist:
+        return jsonify({
+            'message': 'Blacklist with ID {} not found.'.format(blacklist_id)
+        }), 400
+
+    return send_from_directory(current_app.config['THUMBNAIL_STORAGE_FOLDER'], filename='thumbnail_{}.png'.format(blacklist.id)), 200
+
+
+@api_index.route('/pdf/<int:pdf_id>.pdf', methods=['GET'])
+def get_pdf(pdf_id: int):
+
+    pdf = Pdf.query.filter_by(id=pdf_id).first()
+    if not pdf:
+        return jsonify({
+            'message': 'PDF with ID {} not found.'.format(pdf_id)
+        }), 400
+
+    return send_from_directory(current_app.config['PDF_STORAGE_FOLDER'], filename='{}.pdf'.format(pdf.sum)), 200
+
+
 @api_index.route('/blacklist', methods=['GET'], defaults={'page': 1})
 @api_index.route('/blacklist/page/<int:page>', methods=['GET'])
 def get_blacklist(page: int):
@@ -139,7 +163,7 @@ def get_blacklist(page: int):
             'dns': row.dns,
             'bank_account': row.bank_account,
             'has_thumbnail': row.thumbnail,
-            'thumbnail': url_for('static', filename='img/thumbnails/thumbnail_{}.png'.format(row.id), _external=True) if row.thumbnail else None,
+            'thumbnail': url_for('api.index.get_thumbnail', blacklist_id=row.id, _external=True) if row.thumbnail else None,
             'signed': last_pdf.signed,
             'ssl': last_pdf.ssl,
             'dns_date_published': row.dns_date_published,

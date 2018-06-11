@@ -9,7 +9,10 @@ case "$1" in
     if [ -z "$2" ]; then
         echo "Adding blacklist user"
         useradd -m blacklist
-
+        mkdir -p /home/blacklist/pdfs
+        mkdir -p /home/blacklist/thumbnails
+        chown blacklist:blacklist /home/blacklist/pdfs
+        chown blacklist:blacklist /home/blacklist/thumbnails
         systemctl daemon-reload
         blacklist post_install --config_prod
 
@@ -26,6 +29,10 @@ case "$1" in
         systemctl enable blacklist_celerybeat
         systemctl enable blacklist
     else
+        mkdir -p /home/blacklist/pdfs
+        mkdir -p /home/blacklist/thumbnails
+        chown blacklist:blacklist /home/blacklist/pdfs
+        chown blacklist:blacklist /home/blacklist/thumbnails
         blacklist migrations upgrade
         systemctl daemon-reload
         

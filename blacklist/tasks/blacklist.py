@@ -15,7 +15,6 @@ from blacklist.extensions import celery, db
 from blacklist.tools.helpers import fix_url
 from blacklist.models.blacklist import BlockingLog, ApiLog, Pdf, Blacklist
 from blacklist.tools.Validators import Validators
-from blacklist.application import STATIC_FOLDER
 
 try:
     from PIL import Image
@@ -102,7 +101,7 @@ def crawl_blacklist(task_id: str=None) -> None:
         pdf.updated = datetime.datetime.now()
     else:
         # Store PDF
-        file_path = os.path.join(STATIC_FOLDER, 'pdf', '{}.pdf'.format(pdf_sum))
+        file_path = os.path.join(flask.current_app.config['PDF_STORAGE_FOLDER'], '{}.pdf'.format(pdf_sum))
         with open(file_path, 'wb') as f:
             f.write(pdf_content)
 
@@ -183,7 +182,7 @@ def crawl_dns_info(task_id: str=None, only_new: bool=False) -> None:
 
     for blacklist_detail in blacklist_details:
         try:
-            thumbnail_folder = os.path.join(STATIC_FOLDER, 'img', 'thumbnails')
+            thumbnail_folder = flask.current_app.config['THUMBNAIL_STORAGE_FOLDER']
             file_path = os.path.join(thumbnail_folder, '{}.png'.format(blacklist_detail.id))
             thumbnail_file_path = os.path.join(thumbnail_folder, 'thumbnail_{}.png'.format(blacklist_detail.id))
             LOG.debug('Saving screenshot to {}'.format(file_path))

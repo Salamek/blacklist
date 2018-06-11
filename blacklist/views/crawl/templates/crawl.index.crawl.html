@@ -26,7 +26,7 @@
     {% for item in pagination.items %}
     <tr>
         <th scope="row">{{item.id}}</th>
-        <td><a href="{{ url_for('static', filename='pdf/{}.pdf'.format(item.sum))}}" target="_blank">{{item.name}}</a></td>
+        <td><a href="{{ url_for('api.index.get_pdf', pdf_id=item.id) }}" target="_blank">{{item.name}}</a></td>
         <td>{{item.sum}}</td>
         <td>{{item.blacklist.count()}}</td>
         <td>{{item.signed|format_boolean|safe}}</td>

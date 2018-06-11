@@ -76,3 +76,5 @@ class Production(Config):
     SQLALCHEMY_DATABASE_URI = None
     PORT = None  # To be overwritten by a YAML file.
     HOST = None  # To be overwritten by a YAML file.
+    PDF_STORAGE_FOLDER = '/home/blacklist/pdfs'
+    THUMBNAIL_STORAGE_FOLDER = '/home/blacklist/thumbnails'

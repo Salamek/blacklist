@@ -6,6 +6,10 @@ pre_install() {
 ## arg 1:  the new package version
 post_install() {
         useradd -m blacklist
+        mkdir -p /home/blacklist/pdfs
+        mkdir -p /home/blacklist/thumbnails
+        chown blacklist:users /home/blacklist/pdfs
+        chown blacklist:users /home/blacklist/thumbnails
         systemctl enable redis
         systemctl restart redis
         blacklist post_install --config_prod
@@ -27,6 +31,10 @@ pre_upgrade() {
 ## arg 1:  the new package version
 ## arg 2:  the old package version
 post_upgrade() {
+        mkdir -p /home/blacklist/pdfs
+        mkdir -p /home/blacklist/thumbnails
+        chown blacklist:users /home/blacklist/pdfs
+        chown blacklist:users /home/blacklist/thumbnails
         blacklist migrations upgrade
         systemctl daemon-reload
         # Restart service only when is active or enabled
