@@ -42,7 +42,7 @@ case "$1" in
         systemctl enable "${APP_NAME}_celerybeat"
     else
         APP_USER_HOME="$(eval echo ~$APP_USER)"
-        echo "Creating required directories in "${APP_USER} home (if not found)"
+        echo "Creating required directories in ${APP_USER} home (if not found)"
         mkdir -p "$APP_USER_HOME/pdfs"
         mkdir -p "$APP_USER_HOME/thumbnails"
 
