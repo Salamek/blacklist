@@ -112,6 +112,18 @@ def get_thumbnail(blacklist_id: int):
     return send_from_directory(current_app.config['THUMBNAIL_STORAGE_FOLDER'], filename='thumbnail_{}.png'.format(blacklist.id)), 200
 
 
+@api_index.route('/screenshot/<int:blacklist_id>.png', methods=['GET'])
+def get_screenshot(blacklist_id: int):
+
+    blacklist = Blacklist.query.filter_by(id=blacklist_id).first()
+    if not blacklist:
+        return jsonify({
+            'message': 'Blacklist with ID {} not found.'.format(blacklist_id)
+        }), 400
+
+    return send_from_directory(current_app.config['THUMBNAIL_STORAGE_FOLDER'], filename='{}.png'.format(blacklist.id)), 200
+
+
 @api_index.route('/pdf/<string:pdf_sum>.pdf', methods=['GET'])
 def get_pdf(pdf_sum: str):
 
