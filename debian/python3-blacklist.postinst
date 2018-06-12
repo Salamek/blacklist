@@ -50,7 +50,7 @@ case "$1" in
         chown "$APP_USER:$APP_GROUP" "$APP_USER_HOME/pdfs"
         chown "$APP_USER:$APP_GROUP" "$APP_USER_HOME/thumbnails"
 
-        echo "Run "${APP_NAME} migrations"
+        echo "Run ${APP_NAME} migrations"
         $APP_NAME migrations upgrade
         systemctl daemon-reload
         # Restart service only when is active or enabled
