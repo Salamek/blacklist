@@ -27,8 +27,6 @@ case "$1" in
         chown "$APP_USER:$APP_GROUP" "$APP_USER_HOME/thumbnails"
 
         systemctl daemon-reload
-        systemctl enable redis
-        systemctl restart redis
 
         echo "Run $APP_NAME post install script"
         $APP_NAME post_install --config_prod
