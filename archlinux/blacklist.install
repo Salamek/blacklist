@@ -62,16 +62,18 @@ post_upgrade() {
         $APP_NAME migrations upgrade
         systemctl daemon-reload
         # Restart service only when is active or enabled
-        systemctl is-active --quiet $APP_NAME || systemctl is-enabled --quiet $APP_NAME
-        if [ $? -eq 0 ]; then
+        if systemctl is-active --quiet $APP_NAME || systemctl is-enabled --quiet $APP_NAME; then
+            echo "Restarting ${APP_NAME} service"
             systemctl restart $APP_NAME
         fi
-        systemctl is-active --quiet "${APP_NAME}_celeryworker" || systemctl is-enabled --quiet "${APP_NAME}_celeryworker"
-        if [ $? -eq 0 ]; then
+
+        if systemctl is-active --quiet "${APP_NAME}_celeryworker" || systemctl is-enabled --quiet "${APP_NAME}_celeryworker"; then
+            echo "Restarting ${APP_NAME}_celeryworker service"
             systemctl restart "${APP_NAME}_celeryworker"
         fi
-        systemctl is-active --quiet "${APP_NAME}_celerybeat" || systemctl is-enabled --quiet "${APP_NAME}_celerybeat"
-        if [ $? -eq 0 ]; then
+
+        if systemctl is-active --quiet "${APP_NAME}_celerybeat" || systemctl is-enabled --quiet "${APP_NAME}_celerybeat"; then
+            echo "Restarting ${APP_NAME}_celerybeat service"
             systemctl restart "${APP_NAME}_celerybeat"
         fi
 }
