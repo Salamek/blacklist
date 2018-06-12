@@ -3,23 +3,41 @@ pre_install() {
         :
 }
 
+APP_USER=blacklist
+APP_GROUP=users
+APP_NAME=blacklist
+
 ## arg 1:  the new package version
 post_install() {
-        id -u blacklist &>/dev/null || useradd -m blacklist
-        mkdir -p /home/blacklist/pdfs
-        mkdir -p /home/blacklist/thumbnails
-        chown blacklist:users /home/blacklist/pdfs
-        chown blacklist:users /home/blacklist/thumbnails
+        echo "Creating $APP_USER user (if not found)"
+        if ! id -u $APP_USER > /dev/null 2>&1; then
+            useradd -m $APP_USER
+        fi
+
+        APP_USER_HOME="$(eval echo ~$APP_USER)"
+
+        echo "Creating required directories in $APP_USER home"
+        mkdir -p "$APP_USER_HOME/pdfs"
+        mkdir -p "$APP_USER_HOME/thumbnails"
+
+        echo "Chown to $APP_USER:users"
+        chown "$APP_USER:$APP_GROUP" "$APP_USER_HOME/pdfs"
+        chown "$APP_USER:$APP_GROUP" "$APP_USER_HOME/thumbnails"
+
+        systemctl daemon-reload
         systemctl enable redis
         systemctl restart redis
-        blacklist post_install --config_prod
-        systemctl daemon-reload
-        systemctl start blacklist
-        systemctl enable blacklist
-        systemctl start blacklist_celeryworker
-        systemctl enable blacklist_celeryworker
-        systemctl start blacklist_celerybeat
-        systemctl enable blacklist_celerybeat
+
+        echo "Run $APP_NAME post install script"
+        $APP_NAME post_install --config_prod
+
+        echo "Run $APP_NAME services"
+        systemctl start $APP_NAME
+        systemctl enable $APP_NAME
+        systemctl start "${APP_NAME}_celeryworker"
+        systemctl enable "${APP_NAME}_celeryworker"
+        systemctl start "${APP_NAME}_celerybeat"
+        systemctl enable "${APP_NAME}_celerybeat"
 }
 
 ## arg 1:  the new package version
@@ -31,24 +49,30 @@ pre_upgrade() {
 ## arg 1:  the new package version
 ## arg 2:  the old package version
 post_upgrade() {
-        mkdir -p /home/blacklist/pdfs
-        mkdir -p /home/blacklist/thumbnails
-        chown blacklist:users /home/blacklist/pdfs
-        chown blacklist:users /home/blacklist/thumbnails
-        blacklist migrations upgrade
+        APP_USER_HOME="$(eval echo ~$APP_USER)"
+        echo "Creating required directories in "${APP_USER} home (if not found)"
+        mkdir -p "$APP_USER_HOME/pdfs"
+        mkdir -p "$APP_USER_HOME/thumbnails"
+
+        echo "Chown to $APP_USER:users"
+        chown "$APP_USER:$APP_GROUP" "$APP_USER_HOME/pdfs"
+        chown "$APP_USER:$APP_GROUP" "$APP_USER_HOME/thumbnails"
+
+        echo "Run "${APP_NAME} migrations"
+        $APP_NAME migrations upgrade
         systemctl daemon-reload
         # Restart service only when is active or enabled
-        systemctl is-active --quiet blacklist || systemctl is-enabled --quiet blacklist
+        systemctl is-active --quiet $APP_NAME || systemctl is-enabled --quiet $APP_NAME
         if [ $? -eq 0 ]; then
-            systemctl restart blacklist
+            systemctl restart $APP_NAME
         fi
-        systemctl is-active --quiet blacklist_celeryworker || systemctl is-enabled --quiet blacklist_celeryworker
+        systemctl is-active --quiet "${APP_NAME}_celeryworker" || systemctl is-enabled --quiet "${APP_NAME}_celeryworker"
         if [ $? -eq 0 ]; then
-            systemctl restart blacklist_celeryworker
+            systemctl restart "${APP_NAME}_celeryworker"
         fi
-        systemctl is-active --quiet blacklist_celerybeat || systemctl is-enabled --quiet blacklist_celerybeat
+        systemctl is-active --quiet "${APP_NAME}_celerybeat" || systemctl is-enabled --quiet "${APP_NAME}_celerybeat"
         if [ $? -eq 0 ]; then
-            systemctl restart blacklist_celerybeat
+            systemctl restart "${APP_NAME}_celerybeat"
         fi
 }
 

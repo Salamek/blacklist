@@ -1,54 +1,70 @@
 #!/bin/sh
 set -e
 
+APP_USER=blacklist
+APP_GROUP=blacklist
+APP_NAME=blacklist
+
 case "$1" in
   abort-upgrade|abort-remove|abort-deconfigure)
     ;;
 
   configure)
     if [ -z "$2" ]; then
-        echo "Adding blacklist user"
-        id -u blacklist &>/dev/null || useradd -m blacklist
-        mkdir -p /home/blacklist/pdfs
-        mkdir -p /home/blacklist/thumbnails
-        chown blacklist:blacklist /home/blacklist/pdfs
-        chown blacklist:blacklist /home/blacklist/thumbnails
+        echo "Creating $APP_USER user (if not found)"
+        if ! id -u $APP_USER > /dev/null 2>&1; then
+            useradd -m $APP_USER
+        fi
+
+        APP_USER_HOME="$(eval echo ~$APP_USER)"
+
+        echo "Creating required directories in $APP_USER home"
+        mkdir -p "$APP_USER_HOME/pdfs"
+        mkdir -p "$APP_USER_HOME/thumbnails"
+
+        echo "Chown to $APP_USER:users"
+        chown "$APP_USER:$APP_GROUP" "$APP_USER_HOME/pdfs"
+        chown "$APP_USER:$APP_GROUP" "$APP_USER_HOME/thumbnails"
+
         systemctl daemon-reload
-        blacklist post_install --config_prod
+        systemctl enable redis
+        systemctl restart redis
 
-        echo "Startign blacklist service"
-        systemctl start blacklist
+        echo "Run $APP_NAME post install script"
+        $APP_NAME post_install --config_prod
 
-        echo "Startign blacklist_celeryworker service"
-        systemctl start blacklist_celeryworker
-
-        echo "Startign blacklist_celerybeat service"
-        systemctl start blacklist_celerybeat
-        
-        systemctl enable blacklist_celeryworker
-        systemctl enable blacklist_celerybeat
-        systemctl enable blacklist
+        echo "Run $APP_NAME services"
+        systemctl start $APP_NAME
+        systemctl enable $APP_NAME
+        systemctl start "${APP_NAME}_celeryworker"
+        systemctl enable "${APP_NAME}_celeryworker"
+        systemctl start "${APP_NAME}_celerybeat"
+        systemctl enable "${APP_NAME}_celerybeat"
     else
-        mkdir -p /home/blacklist/pdfs
-        mkdir -p /home/blacklist/thumbnails
-        chown blacklist:blacklist /home/blacklist/pdfs
-        chown blacklist:blacklist /home/blacklist/thumbnails
-        blacklist migrations upgrade
+        APP_USER_HOME="$(eval echo ~$APP_USER)"
+        echo "Creating required directories in "${APP_USER} home (if not found)"
+        mkdir -p "$APP_USER_HOME/pdfs"
+        mkdir -p "$APP_USER_HOME/thumbnails"
+
+        echo "Chown to $APP_USER:users"
+        chown "$APP_USER:$APP_GROUP" "$APP_USER_HOME/pdfs"
+        chown "$APP_USER:$APP_GROUP" "$APP_USER_HOME/thumbnails"
+
+        echo "Run "${APP_NAME} migrations"
+        $APP_NAME migrations upgrade
         systemctl daemon-reload
-        
-        if systemctl is-active --quiet blacklist || systemctl is-enabled --quiet blacklist; then
-            echo "Restarting blacklist service"
-            systemctl restart blacklist
+        # Restart service only when is active or enabled
+        systemctl is-active --quiet $APP_NAME || systemctl is-enabled --quiet $APP_NAME
+        if [ $? -eq 0 ]; then
+            systemctl restart $APP_NAME
         fi
-        
-        if systemctl is-active --quiet blacklist_celeryworker || systemctl is-enabled --quiet blacklist_celeryworker; then
-            echo "Restarting blacklist_celeryworker service"
-            systemctl restart blacklist_celeryworker
+        systemctl is-active --quiet "${APP_NAME}_celeryworker" || systemctl is-enabled --quiet "${APP_NAME}_celeryworker"
+        if [ $? -eq 0 ]; then
+            systemctl restart "${APP_NAME}_celeryworker"
         fi
-        
-        if systemctl is-active --quiet blacklist_celerybeat || systemctl is-enabled --quiet blacklist_celerybeat; then
-            echo "Restarting blacklist_celerybeat service"
-            systemctl restart blacklist_celerybeat
+        systemctl is-active --quiet "${APP_NAME}_celerybeat" || systemctl is-enabled --quiet "${APP_NAME}_celerybeat"
+        if [ $? -eq 0 ]; then
+            systemctl restart "${APP_NAME}_celerybeat"
         fi
     fi
     ;;
