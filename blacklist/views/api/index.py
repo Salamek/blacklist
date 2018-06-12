@@ -112,13 +112,13 @@ def get_thumbnail(blacklist_id: int):
     return send_from_directory(current_app.config['THUMBNAIL_STORAGE_FOLDER'], filename='thumbnail_{}.png'.format(blacklist.id)), 200
 
 
-@api_index.route('/pdf/<int:pdf_id>.pdf', methods=['GET'])
-def get_pdf(pdf_id: int):
+@api_index.route('/pdf/<string:pdf_sum>.pdf', methods=['GET'])
+def get_pdf(pdf_sum: str):
 
-    pdf = Pdf.query.filter_by(id=pdf_id).first()
+    pdf = Pdf.query.filter_by(sum=pdf_sum).first()
     if not pdf:
         return jsonify({
-            'message': 'PDF with ID {} not found.'.format(pdf_id)
+            'message': 'PDF with sum {} not found.'.format(pdf_sum)
         }), 400
 
     return send_from_directory(current_app.config['PDF_STORAGE_FOLDER'], filename='{}.pdf'.format(pdf.sum)), 200
