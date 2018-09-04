@@ -1,5 +1,5 @@
 pkgname=blacklist
-pkgver=1.0.33
+pkgver=1.0.34
 pkgdesc="Blacklist"
 pkgrel=1
 arch=('any')

@@ -65,7 +65,7 @@ extra_files.extend(package_files('blacklist/static/bower_components/ekko-lightbo
 
 setup(
     name='blacklist',
-    version='1.0.33',
+    version='1.0.34',
     description='Blacklist',
     long_description=open('README.md').read(),
     author='Adam Schubert',
