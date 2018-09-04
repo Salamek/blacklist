@@ -178,14 +178,14 @@ def get_blacklist(page: int):
             'thumbnail': url_for('api.index.get_thumbnail', blacklist_id=row.id, _external=True) if row.thumbnail else None,
             'signed': last_pdf.signed,
             'ssl': last_pdf.ssl,
-            'dns_date_published': row.dns_date_published,
-            'dns_date_removed': row.dns_date_removed,
-            'bank_account_date_published': row.bank_account_date_published,
-            'bank_account_date_removed': row.bank_account_date_removed,
+            'dns_date_published': row.dns_date_published.isoformat(),
+            'dns_date_removed': row.dns_date_removed.isoformat() if row.dns_date_removed else None,
+            'bank_account_date_published': row.bank_account_date_published.isoformat(),
+            'bank_account_date_removed': row.bank_account_date_removed.isoformat() if row.bank_account_date_removed else None,
             'note': row.note,
             'redirects_to': row.redirects_to,
-            'updated': row.updated,
-            'created': row.created
+            'updated': row.updated.isoformat(),
+            'created': row.created.isoformat()
         })
 
         if 'reveal_agent_identity' in request.args and request.args['reveal_agent_identity']:
