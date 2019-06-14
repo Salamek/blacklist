@@ -11,7 +11,7 @@ flask_migrate
 raven
 tabula-py
 PyPDF2
-psycopg2
+psycopg2-binary
 Pillow
 requests
 docopt
