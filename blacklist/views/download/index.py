@@ -28,3 +28,20 @@ def get_hosts():
         mimetype="text/plain",
         headers={"Content-disposition":
                  "attachment; filename=hosts"})
+
+@download_index.route('/flatbl', methods=['GET'])
+def get_flatbl():
+    items = Blacklist.query.yield_per(1000)
+
+    def generate():
+        for item in items:
+            if item.a:
+                yield "{}\n{}\n".format(item.a, item.dns)
+            if item.aaaa:
+                yield "{}\n{}\n".format(item.a, item.dns)
+
+    return flask.Response(
+        flask.stream_with_context(generate()),
+        mimetype="text/plain",
+        headers={"Content-disposition":
+                 "attachment; filename=flatbl.txt"})
