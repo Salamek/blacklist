@@ -6,7 +6,8 @@ Requires=network.target
 User=blacklist
 Type=simple
 Restart=on-failure
-RemainAfterExit=yes
+RemainAfterExit=no
+RestartSec=5s
 ExecStart=/usr/bin/blacklist celeryworker --config_prod
 
 [Install]
