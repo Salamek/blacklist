@@ -4,6 +4,7 @@ Flask-Babel
 Flask-Celery-Helper
 Flask-Redis-Helper
 Flask-Caching
+Flask-Script
 celery
 redis
 WTForms
