@@ -57,6 +57,7 @@ package:archlinux:
     - useradd -m -G users -s /bin/bash package
     - chown -R package:users archlinux
     - cd archlinux
+    - export DEB_BUILD_OPTIONS=nocheck
     - sudo -H -u package makepkg -f
   tags:
     - archlinux
