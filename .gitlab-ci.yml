@@ -1,7 +1,6 @@
 stages:
   - test
   - package
-  - packagetest
   - deploy
 
 test:debian:
@@ -38,6 +37,7 @@ package:debian:
     - cd blacklist/static
     - bower install --allow-root
     - cd -
+    #- export DEB_BUILD_OPTIONS=nocheck
     - python3 setup.py --command-packages=stdeb.command bdist_deb
   tags:
     - debian
@@ -57,48 +57,47 @@ package:archlinux:
     - useradd -m -G users -s /bin/bash package
     - chown -R package:users archlinux
     - cd archlinux
-    - export DEB_BUILD_OPTIONS=nocheck
     - sudo -H -u package makepkg -f
   tags:
     - archlinux
 
   artifacts:
     paths:
-      - archlinux/blacklist*
+      - archlinux/blacklist*.pkg.tar.zst
     expire_in: 1d
 
-packagetest:debian:
-  stage: packagetest
-  script:
-    - apt-get update -qy
-    - apt-get install -y curl gnupg apt-transport-https
-    - curl -sL https://apt.salamek.cz/apt/conf/salamek.gpg.key | apt-key add -
-    - echo "deb     https://apt.salamek.cz/apt all main" | tee /etc/apt/sources.list.d/salamek.cz.list
-    - apt-get update -qy
-    - cd deb_dist
-    - apt install ./*.deb -qy
-  tags:
-    - virtualbox-debian
-  dependencies:
-    - package:debian
-  only:
-    - tags
+#packagetest:debian:
+#  stage: packagetest
+#  script:
+#    - apt-get update -qy
+#    - apt-get install -y curl gnupg apt-transport-https
+#    - curl -sL https://apt.salamek.cz/apt/conf/salamek.gpg.key | apt-key add -
+#    - echo "deb     https://apt.salamek.cz/apt all main" | tee /etc/apt/sources.list.d/salamek.cz.list
+#    - apt-get update -qy
+#    - cd deb_dist
+#    - apt install ./*.deb -qy
+#  tags:
+#    - debian
+#  dependencies:
+#    - package:debian
+#  only:
+#    - tags
 
-packagetest:archlinux:
-  stage: packagetest
-  script:
-    - echo "[salamek]" >> /etc/pacman.conf
-    - echo "Server = https://arch.salamek.cz/any" >> /etc/pacman.conf
-    - echo "SigLevel = Optional" >> /etc/pacman.conf
-    - pacman -Sy
-    - cd archlinux
-    - pacman -U blacklist*.pkg.tar.xz --noconfirm
-  tags:
-    - virtualbox-archlinux
-  dependencies:
-    - package:archlinux
-  only:
-    - tags
+#packagetest:archlinux:
+#  stage: packagetest
+#  script:
+#    - echo "[salamek]" >> /etc/pacman.conf
+#    - echo "Server = https://arch.salamek.cz/any" >> /etc/pacman.conf
+#    - echo "SigLevel = Optional" >> /etc/pacman.conf
+#    - pacman -Sy
+#    - cd archlinux
+#    - pacman -U blacklist*.pkg.tar.xz --noconfirm
+#  tags:
+#    - archlinux-systemd
+#  dependencies:
+#    - package:archlinux
+#  only:
+#    - tags
 
 repoupdate:
   stage: deploy
@@ -111,12 +110,13 @@ repoupdate:
     - mkdir -p ~/.ssh
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
   script:
-    - ssh www-data@salamek.cz 'rm -rf /var/www/arch.salamek.cz/www/any/blacklist*.pkg.tar.xz'
-    - ssh www-data@salamek.cz 'rm -rf /var/www/apt.salamek.cz/cache/blacklist*.pkg.tar.xz'
-    - scp archlinux/blacklist*.pkg.tar.xz www-data@salamek.cz:/var/www/arch.salamek.cz/www/any
-    - scp deb_dist/*.deb www-data@salamek.cz:/var/www/apt.salamek.cz/cache
-    - ssh www-data@salamek.cz '/var/www/arch.salamek.cz/update_repo.sh'
-    - ssh www-data@salamek.cz '/var/www/apt.salamek.cz/update_repo.sh'
+    - ssh www-data@repository 'rm -rf /var/www/repository.salamek.cz/www/arch/pub/any/blacklist*.pkg.tar.zst'
+    - ssh www-data@repository 'rm -rf /var/www/repository.salamek.cz/cache/deb/pub/blacklist*.deb'
+    - scp archlinux/blacklist*.pkg.tar.zst www-data@repository:/var/www/repository.salamek.cz/www/arch/pub/any
+    - scp deb_dist/*.deb www-data@repository:/var/www/repository.salamek.cz/cache/deb/pub
+    - ssh www-data@repository '/var/www/repository.salamek.cz/deb-pub-update.sh'
+    - ssh www-data@repository '/var/www/repository.salamek.cz/arch-pub-update.sh'
+
   dependencies:
     - package:archlinux
     - package:debian
