@@ -84,14 +84,17 @@ Here is example UWSGI configuration, dont forgot to stop and disable blacklist s
 
 ```ini
 [uwsgi]
-uid = blacklist
+uid = www-data
 master = true
-chdir = /usr/lib/python3/dist-packages/blacklist
-socket = /tmp/uwsgi-blacklist.sock
+threads=2
+processes = 5
+max_request = 300
+chdir = /usr/lib/python3/dist-packages/blacklist/
 module = wsgi
 callable = app
 plugins = python3
 buffer-size = 32768
+
 ```
 
 # Nginx
@@ -105,7 +108,7 @@ server {
         root /usr/lib/python3/dist-packages/blacklist;
 
         location / {
-                uwsgi_pass unix:///tmp/uwsgi-blacklist.sock;
+                uwsgi_pass unix:///run/uwsgi/app/blacklist.salamek.cz/socket;
                 include uwsgi_params;
         }
 }
