@@ -13,7 +13,8 @@ Original blacklist is in [PDF](http://www.mfcr.cz/assets/cs/media/Zverejnovane-u
 * Your provider blocking info
 * OSS :)
 
-# Installation
+# Installation Guide
+
 
 Debian, Ubuntu and Archlinux packages are supported!
 
