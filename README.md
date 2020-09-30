@@ -1,6 +1,6 @@
 # Czech blacklist info page
 
-This is simple Czech Web BLACKLIST info page with simple API to retrieve blacklist items written in Python Flask
+This is a simple Czech Web BLACKLIST info page with a simple API to retrieve blacklist items written in Python Flask
 
 Original blacklist is in [PDF](http://www.mfcr.cz/assets/cs/media/Zverejnovane-udaje-ze-Seznamu-nepovolenych-internetovych-her_v1.pdf) (Yes in PDF, i'm not joking) on [MFCR](http://www.mfcr.cz/cs/soukromy-sektor/hazardni-hry/seznam-nepovolenych-internetovych-her/2017/zverejnovane-udaje-ze-seznamu-nepovoleny-29270) web page
 
@@ -8,18 +8,18 @@ Original blacklist is in [PDF](http://www.mfcr.cz/assets/cs/media/Zverejnovane-u
 
 * JSON API
 * Auto crawling and parsing of PDF
-* List of blacklist items with blocking info, URL, page thumbnail and paging
+* List of blacklist items with blocking info, URL, page thumbnail, and paging
 * Administration of blacklist
 * Your provider blocking info
 * OSS :)
 
 # Installation
 
-Debian, Ubuntu and Archlinux packages are supported!
+Debian, Ubuntu, and Archlinux packages are supported!
 
-Blacklist is controled by 3 systemd services:
+Blacklist is controlled by 3 system services:
 ```
-blacklist # Runs integrated web server (not needed if you run it behind uwsgi)
+blacklist # Runs integrated webserver (not needed if you run it behind uwsgi)
 blacklist_celeryworker # To process celery background tasks
 blacklist_celerybeat # To process periodic tasks
 ```
@@ -75,12 +75,12 @@ After successful install you should run a setup script to configure your install
 
 ```bash
 $ blacklist setup
-# Or python3 manage.py setup for source install
+# Or python3 manage.py setup for a source install
 ```
 
 # UWSGI
 
-Here is example UWSGI configuration, dont forgot to stop and disable blacklist service after your uwsgi server is up and running
+Here is an example UWSGI configuration, don't forget to stop and disable blacklist service after your uwsgi server is up and running
 
 ```ini
 [uwsgi]
