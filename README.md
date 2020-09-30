@@ -1,4 +1,4 @@
-# Czech blacklist info page
+# LOgger id amazing project
 
 Logger id amazing project
 
