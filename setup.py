@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+#some spelling mistakes are solved
 import os
 import re
 import sys
