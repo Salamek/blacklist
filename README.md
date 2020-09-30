@@ -1,4 +1,4 @@
-# Czech blacklist info page
+# Czech Web BLACKLIST info page
 
 This is simple Czech Web BLACKLIST info page with simple API to retrieve blacklist items written in Python Flask
 
