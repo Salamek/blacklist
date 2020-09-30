@@ -1,10 +1,10 @@
-# Czech blacklist info page
+# Czech updated blacklist info page
 
 This is simple Czech Web BLACKLIST info page with simple API to retrieve blacklist items written in Python Flask
 
 Original blacklist is in [PDF](http://www.mfcr.cz/assets/cs/media/Zverejnovane-udaje-ze-Seznamu-nepovolenych-internetovych-her_v1.pdf) (Yes in PDF, i'm not joking) on [MFCR](http://www.mfcr.cz/cs/soukromy-sektor/hazardni-hry/seznam-nepovolenych-internetovych-her/2017/zverejnovane-udaje-ze-seznamu-nepovoleny-29270) web page
 
-# Features
+# great Features
 
 * JSON API
 * Auto crawling and parsing of PDF
