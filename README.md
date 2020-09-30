@@ -1,4 +1,4 @@
-# Czech blacklist info page
+# Czech blacklist info page Bad Boys Website
 
 This is simple Czech Web BLACKLIST info page with simple API to retrieve blacklist items written in Python Flask
 
