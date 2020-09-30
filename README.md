@@ -1,4 +1,5 @@
 # Czech blacklist info page
+#made by Subhamay Ganguly
 
 This is simple Czech Web BLACKLIST info page with simple API to retrieve blacklist items written in Python Flask
 
