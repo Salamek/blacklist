@@ -12,7 +12,7 @@ from flask_celery import single_instance
 from sqlalchemy import or_
 from logging import getLogger
 from blacklist.extensions import celery, db
-from blacklist.tools.helpers import fix_url
+from blacklist.tools.helpers import fix_url, parse_czech_date
 from blacklist.models.blacklist import BlockingLog, ApiLog, Pdf, Blacklist
 from blacklist.tools.Validators import Validators
 
@@ -53,7 +53,6 @@ def log_api(task_id: str, remote_addr: str) -> None:
 @celery.task(bind=True)
 @single_instance
 def crawl_blacklist(task_id: str=None) -> None:
-    date_format = "%d.%m.%Y"
 
     # Find next PDF version
     max_version_found = None
@@ -136,13 +135,11 @@ def crawl_blacklist(task_id: str=None) -> None:
             if not Validators.is_valid_hostname(dns):
                 continue
 
-            dns_date_published = datetime.datetime.strptime(row[2].strip(), date_format) if row[2].strip() else None
-            dns_date_removed = datetime.datetime.strptime(row[3].strip(), date_format) if row[3].strip() else None
+            dns_date_published = parse_czech_date(row[2].strip()) if row[2].strip() else None
+            dns_date_removed = parse_czech_date(row[3].strip()) if row[3].strip() else None
             bank_account = row[4].strip()
-            bank_account_date_published = datetime.datetime.strptime(row[5].strip(), date_format) if row[
-                5].strip() else None
-            bank_account_date_removed = datetime.datetime.strptime(row[6].strip(), date_format) if row[
-                6].strip() else None
+            bank_account_date_published = parse_czech_date(row[5].strip()) if row[5].strip() else None
+            bank_account_date_removed = parse_czech_date(row[6].strip()) if row[6].strip() else None
 
             blacklist = Blacklist.query.filter_by(dns=dns).first()
             if not blacklist:

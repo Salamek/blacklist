@@ -1,4 +1,5 @@
 import hashlib
+import datetime
 import random
 import sys
 
@@ -16,3 +17,9 @@ def fix_url(url: str) -> str:
     if not url.startswith('http'):
         url = 'http://{}'.format(url)
     return url
+
+
+def parse_czech_date(date_garbage: str) -> datetime.datetime:
+    clean_date = date_garbage.translate(str.maketrans('', '', string.whitespace))
+    date_format = "%d.%m.%Y"
+    return datetime.datetime.strptime(clean_date, date_format)
