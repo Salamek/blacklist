@@ -2,6 +2,7 @@ import hashlib
 import datetime
 import random
 import sys
+import string
 
 
 def random_password() -> str:
