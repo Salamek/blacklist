@@ -4,7 +4,7 @@
 
 <h1>{{ _('Blacklist editor') }}</h1>
 
-<a class="btn btn-success" href="{{url_for('blacklist.index.new_blacklist')}}"><i class="fa fa-plus" aria-hidden="true"></i> {{ _('Add') }}</a>
+<a class="btn btn-success" href="{{url_for('blacklist_index.new_blacklist')}}"><i class="fa fa-plus" aria-hidden="true"></i> {{ _('Add') }}</a>
 
 <table class="table table-hover">
     <thead>
@@ -30,9 +30,9 @@
         <td>{{item.updated|format_datetime}}</td>
         <td>{{item.created|format_datetime}}</td>
         <td>
-            <a class="btn btn-xs btn-primary" href="{{url_for('blacklist.index.edit_blacklist', blacklist_id=item.id)}}"><i class="fa fa-pencil" aria-hidden="true"></i> {{ _('Edit') }}</a>
+            <a class="btn btn-xs btn-primary" href="{{url_for('blacklist_index.edit_blacklist', blacklist_id=item.id)}}"><i class="fa fa-pencil" aria-hidden="true"></i> {{ _('Edit') }}</a>
             {% if not item.data %}
-                <a class="btn btn-xs btn-danger confirm" data-confirm-message="{{_('Are you sure you want to delete this blacklist item ?')}}" href="{{url_for('blacklist.index.delete_blacklist', blacklist_id=item.id)}}"><i class="fa fa-trash" aria-hidden="true"></i> {{ _('Delete') }}</a>
+                <a class="btn btn-xs btn-danger confirm" data-confirm-message="{{_('Are you sure you want to delete this blacklist item ?')}}" href="{{url_for('blacklist_index.delete_blacklist', blacklist_id=item.id)}}"><i class="fa fa-trash" aria-hidden="true"></i> {{ _('Delete') }}</a>
             {% endif %}
         </td>
     </tr>

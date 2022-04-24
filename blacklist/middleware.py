@@ -12,7 +12,7 @@ from celery.signals import worker_process_init
 from flask import current_app, render_template, request, g
 from flask_babel import format_datetime, format_date
 from flask_login import current_user
-from blacklist.extensions import navigation, login_manager, babel, db
+from blacklist.extensions import login_manager, babel, db
 from blacklist.models.blacklist import Pdf, Role
 from blacklist.tools.formaters import format_bytes, format_boolean
 from blacklist.tools.helpers import fix_url
@@ -80,19 +80,20 @@ def before_request():
     g.last_crawled_pdf = Pdf.query.order_by(Pdf.updated.desc()).first()
     g.last_data_update_pdf = Pdf.query.order_by(Pdf.created.desc()).first()
 
-    menu_items = []
-    menu_items.append(navigation.Item('Home', 'home.index.get_home'))
-    menu_items.append(navigation.Item('PDF Crawl log', 'crawl.index.get_crawl'))
-    menu_items.append(navigation.Item('API', 'api.index.get_doc'))
-    menu_items.append(navigation.Item('Downloads', 'download.index.get_download'))
-    menu_items.append(navigation.Item('Statistics', 'statistics.index.get_statistics'))
+    menu_items = [
+        ('Home', 'home.index.get_home'),
+        ('PDF Crawl log', 'crawl.index.get_crawl'),
+        ('API', 'api.index.get_doc'),
+        ('Downloads', 'download.index.get_download'),
+        ('Statistics', 'statistics.index.get_statistics')
+    ]
 
     if current_user.is_authenticated and Acl.validate([Role.ADMIN], current_user):
-        menu_items.append(navigation.Item('Users', 'user.index.get_user'))
-        menu_items.append(navigation.Item('Blacklist', 'blacklist.index.get_blacklist'))
-        menu_items.append(navigation.Item('Trigger crawl', 'crawl.index.trigger_crawl'))
+        menu_items.append(('Users', 'user.index.get_user'))
+        menu_items.append(('Blacklist', 'blacklist.index.get_blacklist'))
+        menu_items.append(('Trigger crawl', 'crawl.index.trigger_crawl'))
 
-    navigation.Bar('top', menu_items)
+    g.menu_items = menu_items
 
 
 @current_app.template_filter('format_bytes')

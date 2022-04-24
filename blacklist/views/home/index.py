@@ -44,7 +44,7 @@ def get_home(page: int):
             flask.session[SESSION_KEY_FILTER] = form_data_save
         else:
             flask.session.pop(SESSION_KEY_FILTER, None)
-            return flask.redirect(flask.url_for('home.index.get_home'))
+            return flask.redirect(flask.url_for('home_index.get_home'))
 
     blacklist_filter = []
     if form_data['dns'] != default_data['dns']:
@@ -76,10 +76,10 @@ def get_home(page: int):
 @home_index.route('/test-enable', methods=['GET'])
 def test_enable():
     flask.session[SESSION_KEY] = True
-    return flask.redirect(flask.url_for('home.index.get_home'))
+    return flask.redirect(flask.url_for('home_index.get_home'))
 
 
 @home_index.route('/test-disable', methods=['GET'])
 def test_disable():
     flask.session[SESSION_KEY] = False
-    return flask.redirect(flask.url_for('home.index.get_home'))
+    return flask.redirect(flask.url_for('home_index.get_home'))

@@ -37,7 +37,7 @@ def new_user():
         db.session.add(user_new)
         db.session.commit()
         flask.flash('New user was added successfully.', 'success')
-        return flask.redirect(flask.url_for('user.index.get_user'))
+        return flask.redirect(flask.url_for('user_index.get_user'))
 
     return flask.render_template('user.index.new.html', form=form)
 
@@ -63,7 +63,7 @@ def edit_user(user_id: int):
         db.session.add(user_detail)
         db.session.commit()
         flask.flash('User was saved successfully.', 'success')
-        return flask.redirect(flask.url_for('user.index.get_user'))
+        return flask.redirect(flask.url_for('user_index.get_user'))
 
     return flask.render_template('user.index.edit.html', form=form, user_detail=user_detail)
 
@@ -77,4 +77,4 @@ def delete_user(user_id: int):
     db.session.commit()
     flask.flash('User was deleted successfully.', 'success')
 
-    return flask.redirect(flask.url_for('user.index.get_user'))
+    return flask.redirect(flask.url_for('user_index.get_user'))

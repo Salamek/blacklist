@@ -46,7 +46,7 @@ def new_blacklist():
         crawl_dns_info.delay(True)
 
         flask.flash('New blacklist item was added successfully.', 'success')
-        return flask.redirect(flask.url_for('blacklist.index.get_blacklist'))
+        return flask.redirect(flask.url_for('blacklist_index.get_blacklist'))
 
     return flask.render_template('blacklist.index.new.html', form=form)
 
@@ -86,7 +86,7 @@ def edit_blacklist(blacklist_id: int):
         crawl_dns_info.delay(True)
 
         flask.flash('Domain was saved successfully.', 'success')
-        return flask.redirect(flask.url_for('blacklist.index.get_blacklist'))
+        return flask.redirect(flask.url_for('blacklist_index.get_blacklist'))
 
     return flask.render_template('blacklist.index.edit.html', form=form, blacklist_detail=blacklist_detail)
 
@@ -100,4 +100,4 @@ def delete_blacklist(blacklist_id: int):
     db.session.commit()
     flask.flash('Domain was deleted successfully.', 'success')
 
-    return flask.redirect(flask.url_for('blacklist.index.get_domains'))
+    return flask.redirect(flask.url_for('blacklist_index.get_domains'))

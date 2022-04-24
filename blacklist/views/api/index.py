@@ -175,7 +175,7 @@ def get_blacklist(page: int):
             'dns': row.dns,
             'bank_account': row.bank_account,
             'has_thumbnail': row.thumbnail,
-            'thumbnail': url_for('api.index.get_thumbnail', blacklist_id=row.id, _external=True) if row.thumbnail else None,
+            'thumbnail': url_for('api_index.get_thumbnail', blacklist_id=row.id, _external=True) if row.thumbnail else None,
             'signed': last_pdf.signed,
             'ssl': last_pdf.ssl,
             'dns_date_published': row.dns_date_published.isoformat() if row.dns_date_published else None,
@@ -201,7 +201,7 @@ def get_blacklist(page: int):
         'per_page': paginator.per_page,
         'total': paginator.total,
         'data': data_ret,
-        'next': url_for('api.index.get_blacklist', page=paginator.next_num, _external=True),
-        'prev': url_for('api.index.get_blacklist', page=paginator.prev_num, _external=True)
+        'next': url_for('api_index.get_blacklist', page=paginator.next_num, _external=True),
+        'prev': url_for('api_index.get_blacklist', page=paginator.prev_num, _external=True)
     }
     return jsonify(ret), 200

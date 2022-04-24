@@ -15,7 +15,7 @@
                     {% endfor %}
                 </div>
                 {% endif %}
-                <form method="post" role="form" action="{{url_for('user.index.edit_user', user_id=user_detail.id)}}">
+                <form method="post" role="form" action="{{url_for('user_index.edit_user', user_id=user_detail.id)}}">
                     <div class="col-xs-12 col-sm-12 col-md-12">
                         {{render_field(form.username, 'form-group', _('Username'))}}
                     </div>

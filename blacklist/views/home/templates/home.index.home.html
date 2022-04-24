@@ -11,7 +11,7 @@
 
 <div class="collapse {%if filtered%}in{% endif %}" id="collapseFilter">
     <div class="well">
-        <form method="post" role="form" action="{{url_for('home.index.get_home')}}">
+        <form method="post" role="form" action="{{url_for('home_index.get_home')}}">
             {% if form.errors %}
             <div class="alert alert-danger">
                 There was some errors when proccesing a form.
@@ -64,8 +64,8 @@
         <th>{{ _('Note') }}</th>
         <th class="text-center">{{ _('Your provider blocking status') }}
             <br>
-            <a href="{{url_for('home.index.test_enable')}}" class="confirm btn btn-xs btn-success {% if block_test_enabled %} hidden{% endif %}" data-confirm-message="{{_('This will enable website block testing, testing images will be downloaded from blacklisted domains by your browser to test if it will be blocked by your Internet provider. This test may leak some information about you (IP, UserAgent) to the tested website.')}}">Enable block test</a>
-            <a href="{{url_for('home.index.test_disable')}}" class="btn btn-xs btn-danger {% if not block_test_enabled %} hidden{% endif %}">Disable block test</a>
+            <a href="{{url_for('home_index.test_enable')}}" class="confirm btn btn-xs btn-success {% if block_test_enabled %} hidden{% endif %}" data-confirm-message="{{_('This will enable website block testing, testing images will be downloaded from blacklisted domains by your browser to test if it will be blocked by your Internet provider. This test may leak some information about you (IP, UserAgent) to the tested website.')}}">Enable block test</a>
+            <a href="{{url_for('home_index.test_disable')}}" class="btn btn-xs btn-danger {% if not block_test_enabled %} hidden{% endif %}">Disable block test</a>
         </th>
         <th>{{ _('Updated') }}</th>
         <th>{{ _('Created') }}</th>
@@ -92,7 +92,7 @@
         <td>{{item.bank_account}}</td>
         <td>IPv4:{{item.a}} <br> IPv6:{{item.aaaa}}</td>
         <td>{{item.note}}</td>
-        <td class="text-center"><div class="label blocking-status {% if block_test_enabled %}label-info{% else %}label-default{% endif %}" data-url="{{url_for('api.index.get_image', blacklist_id=item.id)}}" data-result="{{url_for('api.index.log_blocks', blacklist_id=item.id)}}">{{_('Testing...' if block_test_enabled else 'Block test is disabled...')}}</div></td>
+        <td class="text-center"><div class="label blocking-status {% if block_test_enabled %}label-info{% else %}label-default{% endif %}" data-url="{{url_for('api_index.get_image', blacklist_id=item.id)}}" data-result="{{url_for('api.index.log_blocks', blacklist_id=item.id)}}">{{_('Testing...' if block_test_enabled else 'Block test is disabled...')}}</div></td>
         <td>{{item.updated|format_datetime}}</td>
         <td>{{item.created|format_datetime}}</td>
         <td>

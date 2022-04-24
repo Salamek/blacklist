@@ -20,7 +20,7 @@ def login():
     if flask.request.method == 'POST' and form.validate():
         login_user(form.user, remember=True)
         flask.flash('Logged in successfully.', 'success')
-        return flask.redirect(flask.url_for('home.index.get_home'))
+        return flask.redirect(flask.url_for('home_index.get_home'))
     return flask.render_template('sign.index.login.html', form=form)
 
 
@@ -28,4 +28,4 @@ def login():
 @login_required
 def logout():
     logout_user()
-    return flask.redirect(flask.url_for('sign.index.login'))
+    return flask.redirect(flask.url_for('sign_index.login'))
