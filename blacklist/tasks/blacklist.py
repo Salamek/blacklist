@@ -65,7 +65,7 @@ def crawl_blacklist(task_id: str=None) -> None:
 
     LOG.info('Version max: {}'.format(flask.current_app.config['BLACKLIST_VERSION_TRY_MAX']))
 
-    for check_version in range(last_version, last_version + flask.current_app.config['BLACKLIST_VERSION_TRY_MAX']):
+    for check_version in range(last_version + 1, last_version + flask.current_app.config['BLACKLIST_VERSION_TRY_MAX']):
         try:
             LOG.info('Trying version {}'.format(check_version))
             test_url = flask.current_app.config['BLACKLIST_SOURCE'].format(version=check_version)
