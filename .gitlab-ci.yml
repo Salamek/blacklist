@@ -32,7 +32,7 @@ package:debian:
     - apt-get update -qy
     - apt-get install -y nodejs dh-python npm python3-dnspython python3-pygal python3-flask-script python3-flask-redis-helper xvfb wkhtmltopdf python3-tabula-py python3-pillow python3-pypdf2 python3-lxml python3-flask-celery-helper python3-flask-caching python3-dev redis-server python3-pip python3-stdeb python3-celery nodejs git python3-markupsafe python3-psycopg2 python3-dateutil python3-docopt python3-yaml python3-wtforms python3-raven python3-flask-migrate python3-flask-babel python3-flask-navigation python3-flask-login
     - rm -rf "./deb_dist"
-    - cd gitlab_tools/static
+    - cd blacklist/static
     - npm install
     - cd -
     - export DEB_BUILD_OPTIONS=nocheck
