@@ -27,23 +27,17 @@ def _factory(name: str, partial_module_string: str, url_prefix: str=None) -> Blu
 
 
 home_index = _factory('home_index', 'home.index')
-sign_index = _factory('sign_index', 'sign.index', '/sign')
 api_index = _factory('api_index', 'api.index', '/api')
 
-blacklist_index = _factory('blacklist_index', 'blacklist.index', '/blacklist')
 crawl_index = _factory('crawl_index', 'crawl.index', '/crawl')
-user_index = _factory('user_index', 'user.index', '/user')
 download_index = _factory('download_index', 'download.index', '/download')
 statistics_index = _factory('statistics_index', 'statistics.index', '/statistics')
 
 
 all_blueprints = (
     home_index,
-    sign_index,
     api_index,
-    blacklist_index,
     crawl_index,
-    user_index,
     download_index,
     statistics_index
 )

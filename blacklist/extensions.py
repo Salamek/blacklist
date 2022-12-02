@@ -14,7 +14,6 @@ from sqlalchemy.pool import Pool
 from raven.contrib.flask import Sentry
 from flask_babel import Babel
 from flask_celery import Celery
-from flask_login import LoginManager
 from flask_migrate import Migrate
 from flask_caching import Cache
 
@@ -40,7 +39,6 @@ def _on_connect(dbapi_connection, **_) -> None:
 db = SQLAlchemy()
 sentry = Sentry()
 babel = Babel()
-login_manager = LoginManager()
 celery = Celery()
 migrate = Migrate(directory=MIGRATE_ROOT_FOLDER)
 cache = Cache()

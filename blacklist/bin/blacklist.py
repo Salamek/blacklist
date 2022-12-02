@@ -71,7 +71,6 @@ from celery.app.log import Logging
 from celery.utils.nodenames import default_nodename, host_format, node_format
 from blacklist.extensions import db, celery
 from blacklist.application import create_app, get_config
-from blacklist.models.blacklist import User, Role
 from blacklist.config import Config
 from blacklist.tools.helpers import random_password
 
@@ -422,40 +421,7 @@ def setup() -> None:
             # Stamp database to lates migration
             stamp()
 
-            # Create roles
-            roles = {
-                Role.GUEST: 'Guest',
-                Role.ADMIN: 'Administrator',
-                Role.CUSTOMER: 'Customer',
-                Role.MAINTENANCE: 'Maintenance',
-            }
-
-            for role in roles:
-                found_role = Role.query.filter_by(id=role).first()
-                if not found_role:
-                    found_role = Role()
-                    found_role.id = role
-                found_role.name = roles[role]
-                db.session.add(found_role)
-                db.session.commit()
-
-            # Create admin user and set password
-            admin_username = 'admin'
-            admin = User.query.filter_by(username=admin_username).first()
-            new_password = random_password()
-            if not admin:
-                admin = User()
-            admin.set_password(new_password)
-            admin.username = admin_username
-            for role in Role.query.all():
-                admin.roles.append(role)
-
-            db.session.add(admin)
-            db.session.commit()
-
-            print('Database has been created, use this credentials to log-in:')
-            print('Username: {}'.format(admin_username))
-            print('Password: {}'.format(new_password))
+            print('Database has been created')
 
     restart_services = input('Restart services to load new configuration ? (y/n) [n]: ') or 'n'
     if restart_services == 'y':

@@ -91,13 +91,11 @@ if os_name.startswith('Debian'):
     install_requires.extend([
         'flask~=1.1.2',
         'requests~=2.25.1',
-        'Flask-Login==0.5.*',
     ])
 else:
     install_requires.extend([
         'flask~=2.0.3',
         'requests~=2.27.1',
-        'Flask-Login==0.6.*'
     ])
 
 setup(

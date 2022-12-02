@@ -12,7 +12,7 @@ from blacklist.config import Config
 from yaml import load, SafeLoader
 
 import blacklist as app_root
-from blacklist.extensions import db, sentry, babel, login_manager, migrate, celery, cache
+from blacklist.extensions import db, sentry, babel, migrate, celery, cache
 
 APP_ROOT_FOLDER = os.path.abspath(os.path.dirname(app_root.__file__))
 TEMPLATE_FOLDER = os.path.join(APP_ROOT_FOLDER, 'templates')
@@ -104,17 +104,6 @@ def create_app(config_obj: Config, no_sql: bool=False) -> Flask:
     babel.init_app(app)
     celery.init_app(app)
     cache.init_app(app)
-
-    login_manager.init_app(app)
-    login_manager.login_view = "sign_index.login"
-    login_manager.login_message_category = "info"
-    login_manager.localize_callback = gettext
-
-    login_manager.refresh_view = "sign_index.login"
-    login_manager.needs_refresh_message = (
-        u"To protect your account, please reauthenticate to access this page."
-    )
-    login_manager.needs_refresh_message_category = "info"
 
     app.sentry = sentry
 

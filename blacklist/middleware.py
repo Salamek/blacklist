@@ -11,15 +11,11 @@ from logging import getLogger
 from celery.signals import worker_process_init
 from flask import current_app, render_template, request, g
 from flask_babel import format_datetime, format_date
-from flask_login import current_user
-from blacklist.extensions import login_manager, babel, db
-from blacklist.models.blacklist import Pdf, Role
+from blacklist.extensions import babel, db
+from blacklist.models.blacklist import Pdf
 from blacklist.tools.formaters import format_bytes, format_boolean
 from blacklist.tools.helpers import fix_url
-from blacklist.tools.Acl import Acl
 from markupsafe import Markup
-
-from blacklist.models.blacklist import User
 
 LOG = getLogger(__name__)
 
@@ -47,11 +43,6 @@ def celery_worker_init_db(**_) -> None:
 def error_handler(e):
     code = getattr(e, 'code', 500)  # If 500, e == the exception.
     return render_template('{}.html'.format(code)), code
-
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(user_id)
 
 
 @babel.localeselector
@@ -87,11 +78,6 @@ def before_request():
         ('Downloads', 'download.index.get_download'),
         ('Statistics', 'statistics.index.get_statistics')
     ]
-
-    if current_user.is_authenticated and Acl.validate([Role.ADMIN], current_user):
-        menu_items.append(('Users', 'user.index.get_user'))
-        menu_items.append(('Blacklist', 'blacklist.index.get_blacklist'))
-        menu_items.append(('Trigger crawl', 'crawl.index.trigger_crawl'))
 
     g.menu_items = menu_items
 
