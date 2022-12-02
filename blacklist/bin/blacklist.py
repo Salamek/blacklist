@@ -22,6 +22,7 @@ Command details:
     celerydev           Starts a Celery worker with Celery Beat in the same
                         process.
     setup               Setup application
+    run_task            Run task with given name
 
 Usage:
     blacklist server [-p NUM] [-l DIR] [--config_prod]
@@ -34,6 +35,7 @@ Usage:
     blacklist celerybeat [-s FILE] [--pid=FILE] [-l DIR] [--config_prod]
     blacklist celeryworker [-n NUM] [-l DIR] [--config_prod]
     blacklist setup [--config_prod]
+    blacklist run_task <task_name> [--config_prod]
     blacklist (-h | --help)
 
 Options:
@@ -74,6 +76,7 @@ from blacklist.application import create_app, get_config
 from blacklist.models.blacklist import User, Role
 from blacklist.config import Config
 from blacklist.tools.helpers import random_password
+from blacklist.tasks.blacklist import crawl_blacklist, crawl_dns_info
 
 OPTIONS = docopt(__doc__)
 
@@ -462,6 +465,27 @@ def setup() -> None:
         subprocess.call(['systemctl', 'restart', 'blacklist_celeryworker'])
         subprocess.call(['systemctl', 'restart', 'blacklist_celerybeat'])
         subprocess.call(['systemctl', 'restart', 'blacklist'])
+
+
+@command()
+def run_task():
+    options = parse_options()
+    setup_logging('run_task', logging.DEBUG if options.DEBUG else logging.WARNING)
+    app = create_app(options)
+    log = logging.getLogger(__name__)
+
+    with app.app_context():
+        task_name = OPTIONS['<task_name>']
+        selected_task = {
+            'crawl_blacklist': crawl_blacklist,
+            'crawl_dns_info': crawl_dns_info
+        }.get(task_name)
+
+        if not selected_task:
+            log.error('Task {} was not found in list of allowed tasks'.format(task_name))
+
+        task = selected_task.delay()
+        log.info('Task {} started with UUID {}'.format(task_name, task.id))
 
 
 @command()

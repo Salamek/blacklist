@@ -84,7 +84,8 @@ def crawl_blacklist(task_id: str=None) -> None:
                 break
 
     if max_version_found is None:
-        raise Exception('No suitable version of PDF found to download, maybe you will need to raise BLACKLIST_VERSION_TRY_MAX in config')
+        LOG.info('No suitable version of PDF found to download, maybe you will need to raise BLACKLIST_VERSION_TRY_MAX in config')
+        return
 
     latest_version_url = flask.current_app.config['BLACKLIST_SOURCE'].format(version=max_version_found)
     LOG.info('Found PDF {}'.format(latest_version_url))
@@ -93,7 +94,7 @@ def crawl_blacklist(task_id: str=None) -> None:
 
     pdf_sum = hashlib.sha256(pdf_content).hexdigest()
 
-    # We dont have this PDF yet, parse it
+    # We don't have this PDF yet, parse it
     pdf = Pdf.query.filter_by(sum=pdf_sum).first()
     if pdf:
         LOG.info('This PDF is already crawled ID:{}'.format(pdf.id))
