@@ -303,7 +303,7 @@ def setup() -> None:
     configuration = {}
     if os.path.isfile(config_path):
         with open(config_path) as f:
-            loaded_data = yaml.load(f)
+            loaded_data = yaml.load(f, Loader=yaml.SafeLoader)
             if isinstance(loaded_data, dict):
                 configuration.update(loaded_data)
 
