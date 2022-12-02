@@ -102,7 +102,7 @@ else:
 
 setup(
     name='blacklist',
-    version='1.0.43',
+    version='1.0.44',
     description='Blacklist',
     long_description=open('README.md').read(),
     author='Adam Schubert',
