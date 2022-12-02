@@ -64,7 +64,7 @@ extra_files.extend(package_files('blacklist/static/bower_components/ekko-lightbo
 install_requires = [
     'redis==3.5.*',
     'WTForms==2.2.1',
-    'psycopg2-binary==2.8.6',
+    'psycopg2-binary==2.9.5',
     'python-dateutil~=2.8.1',
     'markupsafe==2.0.1',
 
