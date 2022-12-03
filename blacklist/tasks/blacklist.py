@@ -196,17 +196,18 @@ def crawl_dns_info(task_id: str=None, only_new: bool=False) -> None:
             ], stdout=subprocess.PIPE)
             process.wait()
 
-            LOG.debug('Saving thumbnail to {}'.format(thumbnail_file_path))
-            size = (100, 200)
-            image = Image.open(file_path)
-            image.thumbnail(size, Image.ANTIALIAS)
-            background = Image.new('RGBA', size, (255, 255, 255, 0))
-            background.paste(
-                image, (int((size[0] - image.size[0]) // 2), int((size[1] - image.size[1]) // 2))
-            )
-            background.save(thumbnail_file_path)
+            if os.path.isfile(file_path):
+                LOG.debug('Saving thumbnail to {}'.format(thumbnail_file_path))
+                size = (100, 200)
+                image = Image.open(file_path)
+                image.thumbnail(size, Image.ANTIALIAS)
+                background = Image.new('RGBA', size, (255, 255, 255, 0))
+                background.paste(
+                    image, (int((size[0] - image.size[0]) // 2), int((size[1] - image.size[1]) // 2))
+                )
+                background.save(thumbnail_file_path)
 
-            blacklist_detail.thumbnail = True
+                blacklist_detail.thumbnail = True
         except Exception as e:
             LOG.warning('Failed to obtain DNS thumbnail: {}'.format(e))
 
