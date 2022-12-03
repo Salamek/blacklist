@@ -51,14 +51,14 @@ extra_files.extend(package_files('blacklist/static/img'))
 extra_files.extend(package_files('blacklist/static/pdf'))
 
 # Bower components
-extra_files.extend(package_files('blacklist/static/bower_components/bootstrap/dist'))
+extra_files.extend(package_files('blacklist/static/node_modules/bootstrap/dist'))
 
-extra_files.extend(package_files('blacklist/static/bower_components/font-awesome/css'))
-extra_files.extend(package_files('blacklist/static/bower_components/font-awesome/fonts'))
+extra_files.extend(package_files('blacklist/static/node_modules/font-awesome/css'))
+extra_files.extend(package_files('blacklist/static/node_modules/font-awesome/fonts'))
 
-extra_files.extend(package_files('blacklist/static/bower_components/jquery/dist'))
+extra_files.extend(package_files('blacklist/static/node_modules/jquery/dist'))
 
-extra_files.extend(package_files('blacklist/static/bower_components/ekko-lightbox/dist'))
+extra_files.extend(package_files('blacklist/static/node_modules/ekko-lightbox/dist'))
 
 
 install_requires = [

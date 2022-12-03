@@ -7,7 +7,7 @@ backup=('etc/blacklist/config.yml')
 license=('GPL-3.0')
 url='https://github.com/Salamek/blacklist'
 install=blacklist.install
-makedepends=('python-setuptools' 'bower')
+makedepends=('python-setuptools' 'npm')
 depends=(
     'python'
     'systemd'
@@ -31,8 +31,7 @@ depends=(
     'python-flask-caching'
     'python-pypdf2'
     'python-pygal'
-    'xorg-server-xvfb'
-    'wkhtmltopdf'
+    'firefox'
 )
 
 prepare() {
@@ -47,7 +46,7 @@ prepare() {
 
 build() {
   cd "${srcdir}/${pkgname}/blacklist/static"
-  bower install
+  npm install
 }
 
 package() {

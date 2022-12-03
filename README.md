@@ -64,7 +64,7 @@ $ git clone https://github.com/Salamek/blacklist.git
 $ cd blacklist
 $ pip install -r requirements.txt
 $ blacklist post_install --config_prod
-$ bower install
+$ npm i
 $ python3 manage.py server
 $ python3 manage.py celerybeat
 $ python3 manage.py celeryworker

@@ -18,7 +18,7 @@ def get_statistics():
     data = db.session.query(
         func.sum(BlockingLog.success).label("success_all"),
         func.sum(BlockingLog.tests).label("tests_all")
-    ).filter().first()
+    ).one_or_none()
 
     class BlockingPieStyle(DarkSolarizedStyle):
         colors = ('#d9534f', '#5cb85c')
@@ -31,7 +31,9 @@ def get_statistics():
         inner_radius=.4,
         style=BlockingPieStyle
     )
-    blocking_success_chart.add('Blocked', data.tests_all - data.success_all)
+
+    blocked = data.tests_all - data.success_all if data.tests_all and data.success_all else None
+    blocking_success_chart.add('Blocked', blocked)
     blocking_success_chart.add('Not blocked', data.success_all)
 
     blacklist_grow_chart = pygal.Bar(
