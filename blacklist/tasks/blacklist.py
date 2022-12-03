@@ -185,9 +185,16 @@ def crawl_dns_info(task_id: str=None, only_new: bool=False) -> None:
             thumbnail_file_path = os.path.join(thumbnail_folder, 'thumbnail_{}.png'.format(blacklist_detail.id))
             LOG.debug('Saving screenshot to {}'.format(file_path))
 
-            #subprocess.call(['firefox', '-headless', '-screenshot', file_path, '-window-size', '1280', blacklist_detail.dns])
-
-            subprocess.call(["xvfb-run", "--auto-servernum", "--", "wkhtmltoimage", '--width', '1280', blacklist_detail.dns, file_path])
+            process = subprocess.Popen([
+                'chromium',
+                '--headless',
+                '--hide-scrollbars',
+                '--disable-gpu',
+                '--screenshot="{}"'.format(file_path),
+                '--window-size=1280',
+                blacklist_detail.dns
+            ], stdout=subprocess.PIPE)
+            process.wait()
 
             LOG.debug('Saving thumbnail to {}'.format(thumbnail_file_path))
             size = (100, 200)

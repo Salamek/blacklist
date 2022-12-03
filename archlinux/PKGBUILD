@@ -31,7 +31,7 @@ depends=(
     'python-flask-caching'
     'python-pypdf2'
     'python-pygal'
-    'firefox'
+    'chromium'
 )
 
 prepare() {
