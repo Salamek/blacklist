@@ -190,16 +190,18 @@ def crawl_dns_info(task_id: str=None, only_new: bool=False) -> None:
                 '--headless',
                 '--hide-scrollbars',
                 '--disable-gpu',
-                '--screenshot="{}"'.format(file_path),
+                '--screenshot={}'.format(file_path),
                 '--window-size=1280,5000',
                 blacklist_detail.dns
             ], stdout=subprocess.PIPE)
             process.wait()
 
             if not os.path.isfile(file_path):
-                LOG.debug('Thumbnail {} was not generated, skipping'.format(thumbnail_file_path))
+                LOG.debug('Thumbnail {} was not generated, skipping'.format(file_path))
             else:
-                LOG.debug('Saving thumbnail to {}'.format(thumbnail_file_path))
+                # Set permission to 0644
+                os.chmod(file_path, 0o0644)
+                LOG.info('Saving thumbnail to {}'.format(thumbnail_file_path))
                 size = (100, 200)
                 image = Image.open(file_path)
                 image.thumbnail(size, Image.ANTIALIAS)
