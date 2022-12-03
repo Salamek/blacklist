@@ -81,17 +81,17 @@ def before_request():
     g.last_data_update_pdf = Pdf.query.order_by(Pdf.created.desc()).first()
 
     menu_items = [
-        ('Home', 'home.index.get_home'),
-        ('PDF Crawl log', 'crawl.index.get_crawl'),
-        ('API', 'api.index.get_doc'),
-        ('Downloads', 'download.index.get_download'),
-        ('Statistics', 'statistics.index.get_statistics')
+        ('Home', 'home_index.get_home'),
+        ('PDF Crawl log', 'crawl_index.get_crawl'),
+        ('API', 'api_index.get_doc'),
+        ('Downloads', 'download_index.get_download'),
+        ('Statistics', 'statistics_index.get_statistics')
     ]
 
     if current_user.is_authenticated and Acl.validate([Role.ADMIN], current_user):
-        menu_items.append(('Users', 'user.index.get_user'))
-        menu_items.append(('Blacklist', 'blacklist.index.get_blacklist'))
-        menu_items.append(('Trigger crawl', 'crawl.index.trigger_crawl'))
+        menu_items.append(('Users', 'user_index.get_user'))
+        menu_items.append(('Blacklist', 'blacklist_index.get_blacklist'))
+        menu_items.append(('Trigger crawl', 'crawl_index.trigger_crawl'))
 
     g.menu_items = menu_items
 

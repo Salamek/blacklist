@@ -37,7 +37,7 @@
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 {% for item in g.menu_items %}
-                    <li class="{{ 'active' if False '' }}">
+                    <li class="{{ 'active' if False else '' }}">
                         <a href="{{url_for(item[1])}}">{{item[0]}}</a>
                     </li>
                 {% endfor %}

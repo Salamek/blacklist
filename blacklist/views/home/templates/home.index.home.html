@@ -79,7 +79,7 @@
     {% for item in pagination.items %}
     <tr>
         <th scope="row">{{item.id}}</th>
-        <td>{% if item.thumbnail %}<a href="{{ url_for('api.index.get_screenshot', blacklist_id=item.id)}}" title="{{item.dns}}" data-toggle="lightbox" data-width="1024"><img src="{{ url_for('api.index.get_thumbnail', blacklist_id=item.id)}}" alt="{{item.dns}}" width="100" height="200"></a>{% endif %}</td>
+        <td>{% if item.thumbnail %}<a href="{{ url_for('api.index.get_screenshot', blacklist_id=item.id)}}" title="{{item.dns}}" data-toggle="lightbox" data-width="1024"><img src="{{ url_for('api_index.get_thumbnail', blacklist_id=item.id)}}" alt="{{item.dns}}" width="100" height="200"></a>{% endif %}</td>
         <td>
             <a href="{{item.dns|fix_url}}" title="{{_("Blocked DNS")}}" target="_blank">{{item.dns}}</a>
             {% if item.redirects_to %}
@@ -92,7 +92,7 @@
         <td>{{item.bank_account}}</td>
         <td>IPv4:{{item.a}} <br> IPv6:{{item.aaaa}}</td>
         <td>{{item.note}}</td>
-        <td class="text-center"><div class="label blocking-status {% if block_test_enabled %}label-info{% else %}label-default{% endif %}" data-url="{{url_for('api_index.get_image', blacklist_id=item.id)}}" data-result="{{url_for('api.index.log_blocks', blacklist_id=item.id)}}">{{_('Testing...' if block_test_enabled else 'Block test is disabled...')}}</div></td>
+        <td class="text-center"><div class="label blocking-status {% if block_test_enabled %}label-info{% else %}label-default{% endif %}" data-url="{{url_for('api_index.get_image', blacklist_id=item.id)}}" data-result="{{url_for('api_index.log_blocks', blacklist_id=item.id)}}">{{_('Testing...' if block_test_enabled else 'Block test is disabled...')}}</div></td>
         <td>{{item.updated|format_datetime}}</td>
         <td>{{item.created|format_datetime}}</td>
         <td>

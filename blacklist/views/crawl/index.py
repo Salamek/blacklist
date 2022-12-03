@@ -19,7 +19,7 @@ PER_PAGE = 20
 @crawl_index.route('/page/<int:page>', methods=['GET'])
 def get_crawl(page: int):
     pagination = Pdf.query.filter().order_by(Pdf.created.desc()).paginate(page, PER_PAGE)
-    return flask.render_template('crawl_index.crawl.html', pagination=pagination)
+    return flask.render_template('crawl.index.crawl.html', pagination=pagination)
 
 
 @login_required
