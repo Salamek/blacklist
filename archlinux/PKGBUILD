@@ -26,7 +26,7 @@ depends=(
     'python-flask-babel'
     'python-flask-navigation'
     'python-celery'
-    'python-flask-celery-helper'
+    'python-flask-celery-tools'
     'python-flask-redis-helper'
     'python-flask-caching'
     'python-pypdf2'
