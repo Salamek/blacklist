@@ -35,7 +35,7 @@ class CeleryConfig(HardCoded):
     CELERY_TRACK_STARTED = True
     CELERY_DEFAULT_QUEUE = 'blacklist'
 
-    CELERYBEAT_SCHEDULE = {
+    CELERY_BEAT_SCHEDULE = {
         'blacklist-every-hour': dict(task='blacklist.crawl_blacklist', schedule=crontab(minute='0')),
     }
 
